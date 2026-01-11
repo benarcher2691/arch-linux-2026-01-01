@@ -356,6 +356,12 @@ Remove the USB drive when the system restarts.
 - Enter your LUKS encryption passphrase
 - Log in as `root` with the password you set
 
+Set console font:
+
+```bash
+setfont ter-132b
+```
+
 ### 7.3 Connect to the Internet
 
 ```bash
@@ -389,6 +395,7 @@ pacman -S \
     htop \
     hyprland \
     hyprpaper \
+    libreoffice-fresh \
     mako \
     neovim \
     noto-fonts \
@@ -404,6 +411,7 @@ pacman -S \
     thunar \
     tlp \
     ttf-dejavu \
+    ttf-jetbrains-mono-nerd \
     ttf-liberation \
     unzip \
     waybar \
