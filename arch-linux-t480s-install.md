@@ -651,21 +651,47 @@ nmcli device wifi connect "SSID" password "password"
 
 ---
 
-## Optional Enhancements
+## Part 10: AUR and Additional Software (as ben)
 
-### Install AUR Helper (yay)
+### 10.1 Install AUR Helper (yay)
 
 ```bash
-sudo pacman -S git base-devel
+sudo pacman -S --needed git base-devel
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
+cd ..
+rm -rf yay
 ```
 
-### Additional Recommended Packages
+### 10.2 Install AUR Packages
 
 ```bash
-sudo pacman -S firefox htop neofetch unzip zip wget
+yay -S brave-bin
+```
+
+### 10.3 Install NVM (Node Version Manager)
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+```
+
+Log out and back in, then:
+
+```bash
+nvm install --lts
+```
+
+### 10.4 Install SDKMAN (Java/Kotlin/Gradle)
+
+```bash
+curl -s "https://get.sdkman.io" | bash
+```
+
+Log out and back in, then:
+
+```bash
+sdk install java
 ```
 
 ---
