@@ -172,7 +172,7 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 ### 5.1 Install Essential Packages
 
 ```bash
-pacstrap -K /mnt base linux linux-firmware intel-ucode sudo terminus-font vim
+pacstrap -K /mnt base linux linux-firmware intel-ucode networkmanager sudo terminus-font vim
 ```
 
 ### 5.2 Generate fstab
@@ -284,7 +284,13 @@ mkinitcpio -P
 passwd
 ```
 
-### 6.8 Install Bootloader (systemd-boot)
+### 6.8 Enable NetworkManager
+
+```bash
+systemctl enable NetworkManager
+```
+
+### 6.9 Install Bootloader (systemd-boot)
 
 ```bash
 bootctl install
@@ -329,9 +335,44 @@ editor no
 
 ---
 
-## Part 7: Install Desktop Environment Packages
+## Part 7: First Reboot
 
-### 7.1 Install All Required Packages
+Verify the base system boots correctly before continuing.
+
+### 7.1 Exit and Unmount
+
+```bash
+exit
+umount -R /mnt
+reboot
+```
+
+Remove the USB drive when the system restarts.
+
+### 7.2 Verify Boot
+
+- You should see the systemd-boot menu
+- Select "Arch Linux"
+- Enter your LUKS encryption passphrase
+- Log in as `root` with the password you set
+
+### 7.3 Connect to the Internet
+
+```bash
+nmtui
+```
+
+Or for Wi-Fi via command line:
+
+```bash
+nmcli device wifi connect "YourNetwork" password "YourPassword"
+```
+
+---
+
+## Part 8: System Setup (as root)
+
+### 8.1 Install Desktop Environment Packages
 
 ```bash
 pacman -S \
@@ -350,7 +391,6 @@ pacman -S \
     hyprpaper \
     mako \
     neovim \
-    networkmanager \
     noto-fonts \
     pavucontrol \
     pipewire \
@@ -375,27 +415,14 @@ pacman -S \
     zip
 ```
 
-### 7.2 Enable Services
-
-```bash
-systemctl enable NetworkManager
-systemctl enable bluetooth
-systemctl enable greetd
-systemctl enable tlp
-```
-
----
-
-## Part 8: Create User Account
-
-### 8.1 Create Your User
+### 8.2 Create User Account
 
 ```bash
 useradd -m -G wheel -s /bin/bash ben
 passwd ben
 ```
 
-### 8.2 Enable sudo for wheel group
+### 8.3 Enable sudo for wheel group
 
 ```bash
 EDITOR=vim visudo
@@ -407,11 +434,15 @@ Uncomment this line:
 %wheel ALL=(ALL:ALL) ALL
 ```
 
----
+### 8.4 Enable Services
 
-## Part 9: Configure greetd
+```bash
+systemctl enable bluetooth
+systemctl enable greetd
+systemctl enable tlp
+```
 
-### 9.1 Edit greetd Configuration
+### 8.5 Configure greetd
 
 ```bash
 vim /etc/greetd/config.toml
@@ -428,27 +459,19 @@ command = "tuigreet --time --remember --cmd Hyprland"
 user = "greeter"
 ```
 
----
-
-## Part 10: Reboot
-
-### 10.1 Exit and Unmount
+### 8.6 Reboot to Desktop
 
 ```bash
-exit
-umount -R /mnt
 reboot
 ```
 
-Remove the USB drive when the system restarts.
-
 ---
 
-## Part 11: Post-Installation (First Boot)
+## Part 9: Post-Installation (as ben)
 
-After entering your encryption passphrase and logging in via tuigreet:
+After entering your encryption passphrase, log in as `ben` via tuigreet:
 
-### 11.1 Connect to Wi-Fi (if needed)
+### 9.1 Connect to Wi-Fi (if needed)
 
 ```bash
 nmtui
@@ -460,7 +483,7 @@ Or use:
 nmcli device wifi connect "YourNetwork" password "YourPassword"
 ```
 
-### 11.2 Enable PipeWire Audio (as your user)
+### 9.2 Enable PipeWire Audio
 
 ```bash
 systemctl --user enable pipewire-pulse.socket
@@ -469,7 +492,7 @@ systemctl --user start pipewire-pulse.socket
 systemctl --user start wireplumber.service
 ```
 
-### 11.3 Create Hyprland Configuration
+### 9.3 Create Hyprland Configuration
 
 ```bash
 mkdir -p ~/.config/hypr
@@ -491,7 +514,7 @@ exec-once = hyprpaper
 exec-once = mako
 
 # Set your terminal
-$terminal = kitty
+$terminal = ghostty
 
 # Set your launcher
 $menu = rofi -show drun
@@ -503,7 +526,7 @@ bind = $mainMod, Q, killactive
 bind = $mainMod SHIFT, E, exit
 ```
 
-### 11.4 Configure Hyprpaper
+### 9.4 Configure Hyprpaper
 
 ```bash
 mkdir -p ~/.config/hypr
@@ -517,7 +540,7 @@ preload = /path/to/your/wallpaper.jpg
 wallpaper = ,/path/to/your/wallpaper.jpg
 ```
 
-### 11.5 Configure Waybar
+### 9.5 Configure Waybar
 
 ```bash
 mkdir -p ~/.config/waybar
@@ -530,7 +553,7 @@ Edit as desired:
 vim ~/.config/waybar/config
 ```
 
-### 11.6 Test Bluetooth
+### 9.6 Test Bluetooth
 
 ```bash
 bluetoothctl
@@ -549,7 +572,7 @@ connect XX:XX:XX:XX:XX:XX
 exit
 ```
 
-### 11.7 Test Audio
+### 9.7 Test Audio
 
 ```bash
 pavucontrol
