@@ -27,7 +27,13 @@ A manual installation guide for Arch Linux with full disk encryption, Hyprland (
 
 Boot from the Arch Linux USB. Disable Secure Boot in BIOS if necessary.
 
-### 1.2 Verify UEFI Boot Mode
+### 1.2 Set Console Font
+
+```bash
+setfont ter-132b
+```
+
+### 1.3 Verify UEFI Boot Mode
 
 ```bash
 cat /sys/firmware/efi/fw_platform_size
@@ -35,7 +41,7 @@ cat /sys/firmware/efi/fw_platform_size
 
 This should return `64` (or `32`). If the file doesn't exist, you're in BIOS mode.
 
-### 1.3 Connect to the Internet
+### 1.4 Connect to the Internet
 
 **For Ethernet:** Should work automatically.
 
@@ -61,7 +67,7 @@ Verify connection:
 ping -c 3 archlinux.org
 ```
 
-### 1.4 Update System Clock
+### 1.5 Update System Clock
 
 ```bash
 timedatectl set-ntp true
@@ -143,7 +149,16 @@ mkfs.fat -F32 /dev/nvme0n1p1
 mkfs.ext4 /dev/mapper/cryptroot
 ```
 
-### 4.2 Mount Partitions
+### 4.2 Test Encryption
+
+Close and reopen the encrypted volume to verify your passphrase works:
+
+```bash
+cryptsetup close cryptroot
+cryptsetup open /dev/nvme0n1p2 cryptroot
+```
+
+### 4.3 Mount Partitions
 
 ```bash
 mount /dev/mapper/cryptroot /mnt
@@ -157,7 +172,7 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 ### 5.1 Install Essential Packages
 
 ```bash
-pacstrap -K /mnt base linux linux-firmware intel-ucode nano sudo
+pacstrap -K /mnt base linux linux-firmware intel-ucode vim sudo
 ```
 
 ### 5.2 Generate fstab
@@ -185,14 +200,8 @@ arch-chroot /mnt
 ### 6.2 Set Timezone
 
 ```bash
-ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+ln -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
 hwclock --systohc
-```
-
-Replace `America/New_York` with your timezone. List available zones with:
-
-```bash
-ls /usr/share/zoneinfo/
 ```
 
 ### 6.3 Localization
@@ -200,7 +209,7 @@ ls /usr/share/zoneinfo/
 Edit locale file:
 
 ```bash
-nano /etc/locale.gen
+vim /etc/locale.gen
 ```
 
 Uncomment this line:
@@ -221,7 +230,17 @@ Create locale config:
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 ```
 
-### 6.4 Network Configuration
+### 6.4 Console Configuration
+
+```bash
+cat > /etc/vconsole.conf << EOF
+KEYMAP=us
+XKBLAYOUT=us
+FONT=ter-132b
+EOF
+```
+
+### 6.5 Network Configuration
 
 Set hostname:
 
@@ -229,12 +248,12 @@ Set hostname:
 echo "t480s" > /etc/hostname
 ```
 
-### 6.5 Configure mkinitcpio for Encryption
+### 6.6 Configure mkinitcpio for Encryption
 
 Edit the configuration:
 
 ```bash
-nano /etc/mkinitcpio.conf
+vim /etc/mkinitcpio.conf
 ```
 
 Find the `HOOKS` line and replace it with:
@@ -249,13 +268,13 @@ Regenerate initramfs:
 mkinitcpio -P
 ```
 
-### 6.6 Set Root Password
+### 6.7 Set Root Password
 
 ```bash
 passwd
 ```
 
-### 6.7 Install Bootloader (systemd-boot)
+### 6.8 Install Bootloader (systemd-boot)
 
 ```bash
 bootctl install
@@ -270,7 +289,7 @@ blkid -s UUID -o value /dev/nvme0n1p2
 Copy this UUID. Now create the boot entry:
 
 ```bash
-nano /boot/loader/entries/arch.conf
+vim /boot/loader/entries/arch.conf
 ```
 
 Add (replace `YOUR-UUID-HERE` with the actual UUID):
@@ -286,7 +305,7 @@ options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw
 Configure the loader:
 
 ```bash
-nano /boot/loader/loader.conf
+vim /boot/loader/loader.conf
 ```
 
 Add:
@@ -305,31 +324,54 @@ editor no
 ### 7.1 Install All Required Packages
 
 ```bash
-pacman -S networkmanager \
-    greetd greetd-tuigreet \
-    hyprland xdg-desktop-portal-hyprland \
-    waybar \
-    hyprpaper \
-    rofi-wayland \
-    pipewire pipewire-pulse pipewire-alsa wireplumber \
-    bluez bluez-utils blueman \
-    polkit \
-    kitty \
-    ttf-dejavu ttf-liberation noto-fonts \
+pacman -S \
+    blueman \
+    bluez \
+    bluez-utils \
     brightnessctl \
-    grim slurp \
-    wl-clipboard \
-    thunar \
+    fastfetch \
+    fd \
+    ghostty \
+    greetd \
+    greetd-tuigreet \
+    grim \
+    htop \
+    hyprland \
+    hyprpaper \
     mako \
-    pavucontrol
+    neovim \
+    networkmanager \
+    noto-fonts \
+    pavucontrol \
+    pipewire \
+    pipewire-alsa \
+    pipewire-pulse \
+    polkit \
+    ripgrep \
+    rofi-wayland \
+    slurp \
+    stow \
+    thunar \
+    tlp \
+    ttf-dejavu \
+    ttf-liberation \
+    unzip \
+    waybar \
+    wget \
+    wireplumber \
+    wl-clipboard \
+    xdg-desktop-portal-hyprland \
+    yazi \
+    zip
 ```
 
 ### 7.2 Enable Services
 
 ```bash
 systemctl enable NetworkManager
-systemctl enable greetd
 systemctl enable bluetooth
+systemctl enable greetd
+systemctl enable tlp
 ```
 
 ---
@@ -339,16 +381,14 @@ systemctl enable bluetooth
 ### 8.1 Create Your User
 
 ```bash
-useradd -m -G wheel -s /bin/bash yourusername
-passwd yourusername
+useradd -m -G wheel -s /bin/bash ben
+passwd ben
 ```
-
-Replace `yourusername` with your desired username.
 
 ### 8.2 Enable sudo for wheel group
 
 ```bash
-EDITOR=nano visudo
+EDITOR=vim visudo
 ```
 
 Uncomment this line:
@@ -364,7 +404,7 @@ Uncomment this line:
 ### 9.1 Edit greetd Configuration
 
 ```bash
-nano /etc/greetd/config.toml
+vim /etc/greetd/config.toml
 ```
 
 Replace contents with:
@@ -429,7 +469,7 @@ cp /usr/share/hypr/hyprland.conf ~/.config/hypr/hyprland.conf
 Edit your config:
 
 ```bash
-nano ~/.config/hypr/hyprland.conf
+vim ~/.config/hypr/hyprland.conf
 ```
 
 Add/modify these essentials:
@@ -457,7 +497,7 @@ bind = $mainMod SHIFT, E, exit
 
 ```bash
 mkdir -p ~/.config/hypr
-nano ~/.config/hypr/hyprpaper.conf
+vim ~/.config/hypr/hyprpaper.conf
 ```
 
 Add:
@@ -477,7 +517,7 @@ cp /etc/xdg/waybar/* ~/.config/waybar/
 Edit as desired:
 
 ```bash
-nano ~/.config/waybar/config
+vim ~/.config/waybar/config
 ```
 
 ### 11.6 Test Bluetooth
@@ -572,13 +612,6 @@ makepkg -si
 
 ```bash
 sudo pacman -S firefox htop neofetch unzip zip wget
-```
-
-### Power Management (for laptop)
-
-```bash
-sudo pacman -S tlp
-sudo systemctl enable tlp
 ```
 
 ---

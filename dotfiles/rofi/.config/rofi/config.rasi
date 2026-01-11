@@ -1,0 +1,70 @@
+configuration {
+    modi: "drun,run,window";
+    show-icons: true;
+    icon-theme: "Adwaita";
+    terminal: "ghostty";
+    font: "DejaVu Sans 12";
+}
+
+* {
+    bg: #1e1e2e;
+    fg: #cdd6f4;
+    accent: #89b4fa;
+    urgent: #f38ba8;
+
+    background-color: transparent;
+    text-color: @fg;
+}
+
+window {
+    width: 600px;
+    background-color: @bg;
+    border: 2px;
+    border-color: @accent;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+inputbar {
+    children: [prompt, entry];
+    spacing: 10px;
+    padding: 10px;
+    background-color: #313244;
+    border-radius: 8px;
+}
+
+prompt {
+    text-color: @accent;
+}
+
+entry {
+    placeholder: "Search...";
+    placeholder-color: #6c7086;
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    fixed-height: true;
+    spacing: 5px;
+    padding: 10px 0 0 0;
+}
+
+element {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+element selected {
+    background-color: @accent;
+    text-color: @bg;
+}
+
+element-icon {
+    size: 24px;
+    margin: 0 10px 0 0;
+}
+
+element-text {
+    vertical-align: 0.5;
+}

@@ -1,0 +1,26 @@
+# Ghostty Configuration
+
+# Font
+font-family = monospace
+font-size = 12
+
+# Window
+window-padding-x = 10
+window-padding-y = 10
+
+# Theme (catppuccin-mocha style)
+background = 1e1e2e
+foreground = cdd6f4
+
+# Cursor
+cursor-style = block
+cursor-style-blink = true
+
+# Shell integration
+shell-integration = bash
+
+# Scrollback
+scrollback-limit = 10000
+
+# Copy/paste
+copy-on-select = true
