@@ -248,6 +248,16 @@ Set hostname:
 echo "t480s" > /etc/hostname
 ```
 
+Create hosts file:
+
+```bash
+cat > /etc/hosts << EOF
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   t480s
+EOF
+```
+
 ### 6.6 Configure mkinitcpio for Encryption
 
 Edit the configuration:
