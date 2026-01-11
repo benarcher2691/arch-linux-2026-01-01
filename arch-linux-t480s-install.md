@@ -396,6 +396,7 @@ pacman -S \
     htop \
     hyprland \
     hyprpaper \
+    kitty \
     libreoffice-fresh \
     mako \
     neovim \
@@ -562,7 +563,7 @@ cp /etc/xdg/waybar/* ~/.config/waybar/
 Edit as desired:
 
 ```bash
-vim ~/.config/waybar/config
+vim ~/.config/waybar/config.jsonc
 ```
 
 ### 9.6 Test Bluetooth
@@ -578,11 +579,19 @@ power on
 agent on
 default-agent
 scan on
-# Wait for your device to appear
+```
+
+Wait for your device to appear (e.g., `[NEW] Device XX:XX:XX:XX:XX:XX Rexcore Halo`), then:
+
+```
+scan off
 pair XX:XX:XX:XX:XX:XX
 connect XX:XX:XX:XX:XX:XX
+trust XX:XX:XX:XX:XX:XX
 exit
 ```
+
+Use `trust` so it auto-reconnects in the future.
 
 ### 9.7 Test Audio
 
