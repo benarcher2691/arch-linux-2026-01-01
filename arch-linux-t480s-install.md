@@ -386,6 +386,7 @@ pacman -S \
     bluez \
     bluez-utils \
     brightnessctl \
+    cups \
     fastfetch \
     fd \
     ghostty \
@@ -423,6 +424,8 @@ pacman -S \
     zip
 ```
 
+When prompted for a JACK provider, select `pipewire-jack` (integrates with PipeWire).
+
 ### 8.2 Create User Account
 
 ```bash
@@ -446,6 +449,7 @@ Uncomment this line:
 
 ```bash
 systemctl enable bluetooth
+systemctl enable cups
 systemctl enable greetd
 systemctl enable tlp
 ```
