@@ -172,7 +172,7 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 ### 5.1 Install Essential Packages
 
 ```bash
-pacstrap -K /mnt base linux linux-firmware intel-ucode vim sudo
+pacstrap -K /mnt base linux linux-firmware intel-ucode sudo terminus-font vim
 ```
 
 ### 5.2 Generate fstab
