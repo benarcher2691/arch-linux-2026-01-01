@@ -1,0 +1,12 @@
+[user]
+	name = Ben Archer
+	email = ben.archer2691@gmail.com
+
+[alias]
+	ci = commit
+	co = checkout
+	br = branch
+	st = status
+
+[pull]
+	ff = only
