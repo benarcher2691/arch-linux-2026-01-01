@@ -27,12 +27,12 @@ alias ..='cd ..'
 alias ...='cd ../..'
 
 # Modern replacements (if installed)
-command -v yazi &> /dev/null && alias y='yazi'
-command -v nvim &> /dev/null && alias vim='nvim'
+# command -v yazi &> /dev/null && alias y='yazi'
+# command -v nvim &> /dev/null && alias vim='nvim'
 
 # Environment
-export EDITOR=nvim
-export VISUAL=nvim
+export EDITOR=vim
+export VISUAL=vim
 
 # Path
 export PATH="$HOME/.local/bin:$PATH"
