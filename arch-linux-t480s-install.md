@@ -269,7 +269,7 @@ vim /etc/mkinitcpio.conf
 Find the `HOOKS` line and replace it with:
 
 ```
-HOOKS=(base systemd autodetect microcode modconf kms keyboard block sd-encrypt filesystems fsck)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems fsck)
 ```
 
 Regenerate initramfs:
