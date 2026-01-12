@@ -404,6 +404,7 @@ pacman -S \
     neovim \
     noto-fonts \
     openssh \
+    otf-font-awesome \
     pass \
     pavucontrol \
     pipewire \
