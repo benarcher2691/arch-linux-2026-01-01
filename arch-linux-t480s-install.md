@@ -402,6 +402,7 @@ pacman -S \
     mako \
     neovim \
     noto-fonts \
+    openssh \
     pavucontrol \
     pipewire \
     pipewire-alsa \
