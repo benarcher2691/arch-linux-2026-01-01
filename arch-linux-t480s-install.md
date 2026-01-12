@@ -579,7 +579,7 @@ cd ~/dotfiles
 Stow all configurations (creates symlinks to ~/.config):
 
 ```bash
-stow bash claude ghostty git hypr mako rofi wallpapers waybar yazi
+stow bash claude ghostty git hypr mako rofi vim wallpapers waybar yazi
 ```
 
 This sets up configs for Hyprland, Waybar, rofi, mako notifications, and more.
