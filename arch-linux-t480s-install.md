@@ -412,6 +412,7 @@ pacman -S \
     stow \
     thunar \
     tlp \
+    tmux \
     ttf-dejavu \
     ttf-jetbrains-mono-nerd \
     ttf-liberation \
@@ -606,6 +607,20 @@ pactl info
 wpctl status
 ```
 
+### 9.8 Set Up SSH Keys
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+```
+
+Copy your keys from backup/USB (e.g., `id_ed25519`, `id_ed25519.pub`), then set permissions:
+
+```bash
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+```
+
 ---
 
 ## Quick Reference - Key Bindings (Default Hyprland)
@@ -667,7 +682,7 @@ rm -rf yay
 ### 10.2 Install AUR Packages
 
 ```bash
-yay -S brave-bin
+yay -S brave-bin claude-code localsend-bin opencode-bin
 ```
 
 ### 10.3 Install NVM (Node Version Manager)
