@@ -315,7 +315,7 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw
+options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet
 ```
 
 Configure the loader:
