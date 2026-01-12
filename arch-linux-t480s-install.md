@@ -390,6 +390,7 @@ pacman -S \
     fastfetch \
     fd \
     ghostty \
+    github-cli \
     greetd \
     greetd-tuigreet \
     grim \
