@@ -11,7 +11,7 @@ A manual installation guide for Arch Linux with full disk encryption, Hyprland (
 | Bootloader | systemd-boot |
 | Encryption | LUKS with systemd initramfs |
 | Network | NetworkManager |
-| Display Manager | greetd + tuigreet |
+| Display Manager | greetd + regreet |
 | Compositor | Hyprland (Wayland) |
 | Status Bar | Waybar |
 | Launcher | rofi-wayland |
@@ -392,8 +392,8 @@ pacman -S \
     ghostty \
     git \
     github-cli \
+    cage \
     greetd \
-    greetd-tuigreet \
     grim \
     htop \
     hyprland \
@@ -452,7 +452,35 @@ Uncomment this line:
 %wheel ALL=(ALL:ALL) ALL
 ```
 
-### 8.4 Enable Services
+### 8.4 Install AUR Helper (yay)
+
+Switch to the new user to install yay:
+
+```bash
+su - ben
+```
+
+Build and install yay:
+
+```bash
+cd /tmp
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin
+makepkg -si
+cd ..
+rm -rf yay-bin
+```
+
+### 8.5 Install regreet (GUI Greeter)
+
+Still as ben, install regreet from the AUR:
+
+```bash
+yay -S greetd-regreet
+exit
+```
+
+### 8.6 Enable Services
 
 ```bash
 systemctl enable bluetooth
@@ -461,7 +489,7 @@ systemctl enable greetd
 systemctl enable tlp
 ```
 
-### 8.5 Configure greetd
+### 8.7 Configure greetd
 
 ```bash
 vim /etc/greetd/config.toml
@@ -474,11 +502,11 @@ Replace contents with:
 vt = 1
 
 [default_session]
-command = "tuigreet --time --remember --cmd start-hyprland"
+command = "cage -s -- regreet"
 user = "greeter"
 ```
 
-### 8.6 Reboot to Desktop
+### 8.8 Reboot to Desktop
 
 ```bash
 reboot
@@ -488,7 +516,7 @@ reboot
 
 ## Part 9: Post-Installation (as ben)
 
-After entering your encryption passphrase, log in as `ben` via tuigreet:
+After entering your encryption passphrase, log in as `ben` via regreet:
 
 ### 9.1 Connect to Wi-Fi (if needed)
 
@@ -789,6 +817,6 @@ You now have a fully encrypted Arch Linux installation with:
 - hyprpaper wallpaper manager
 - PipeWire audio
 - Bluetooth support
-- greetd login manager with tuigreet
+- greetd login manager with regreet (GUI greeter)
 
 Enjoy your new Arch Linux system!

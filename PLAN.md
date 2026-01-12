@@ -7,7 +7,7 @@
 - [ ] General smoke tests (bluetooth, audio, brightness, screenshots)
 - [ ] Nicer startup experience
   - [ ] Cleaner boot (quiet kernel params, plymouth splash?)
-  - [ ] More graphical greetd (regreet, or theme tuigreet)
+  - [x] More graphical greetd (regreet)
 
 ## Future / Low Priority
 

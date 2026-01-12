@@ -9,7 +9,7 @@ A manual installation guide (`arch-linux-t480s-install.md`) with step-by-step co
 - UEFI boot with systemd-boot
 - LUKS full disk encryption (systemd-based initramfs)
 - Hyprland Wayland compositor
-- greetd + tuigreet login manager
+- greetd + regreet login manager
 - Waybar, rofi-wayland, hyprpaper
 - PipeWire audio
 - Bluetooth (bluez + blueman)
