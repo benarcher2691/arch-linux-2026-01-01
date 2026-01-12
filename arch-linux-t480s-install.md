@@ -390,6 +390,7 @@ pacman -S \
     fastfetch \
     fd \
     ghostty \
+    git \
     github-cli \
     greetd \
     greetd-tuigreet \
@@ -403,6 +404,7 @@ pacman -S \
     neovim \
     noto-fonts \
     openssh \
+    pass \
     pavucontrol \
     pipewire \
     pipewire-alsa \
@@ -433,7 +435,7 @@ When prompted for a JACK provider, select `pipewire-jack` (integrates with PipeW
 ### 8.2 Create User Account
 
 ```bash
-useradd -m -G wheel -s /bin/bash ben
+useradd -m -G wheel,input -s /bin/bash ben
 passwd ben
 ```
 
@@ -499,7 +501,90 @@ Or use:
 nmcli device wifi connect "YourNetwork" password "YourPassword"
 ```
 
-### 9.2 Enable PipeWire Audio
+### 9.2 Set Up SSH and GPG Keys
+
+**SSH Keys:**
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+```
+
+Copy your keys from backup/USB (e.g., `id_ed25519`, `id_ed25519.pub`), then set permissions:
+
+```bash
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+```
+
+Test SSH connection to GitHub:
+
+```bash
+ssh -T git@github.com
+```
+
+**GPG Keys:**
+
+Copy your exported GPG files from backup/USB (`private-key.asc`, `trustdb.txt`), then import:
+
+```bash
+gpg --import private-key.asc
+gpg --import-ownertrust trustdb.txt
+```
+
+Verify import:
+
+```bash
+gpg --list-secret-keys --keyid-format LONG
+```
+
+To export keys on your old machine beforehand:
+
+```bash
+gpg --list-secret-keys --keyid-format LONG          # Find your key ID
+gpg --export-secret-keys --armor KEY_ID > private-key.asc
+gpg --export-ownertrust > trustdb.txt
+```
+
+**Password Store (pass):**
+
+Clone your password store (encrypted with the GPG key above):
+
+```bash
+git clone git@github.com:benarcher2691/pass-store.git ~/.password-store
+```
+
+Verify:
+
+```bash
+pass          # List entries
+pass show test-entry   # Decrypt an entry
+```
+
+### 9.3 Clone and Stow Dotfiles
+
+Authenticate with GitHub CLI:
+
+```bash
+gh auth login
+```
+
+Clone your dotfiles repository:
+
+```bash
+git clone git@github.com:benarcher2691/dotfiles_arch_2026.git ~/dotfiles
+cd ~/dotfiles
+```
+
+Stow all configurations (creates symlinks to ~/.config):
+
+```bash
+stow bash claude ghostty git hypr mako rofi wallpapers waybar yazi
+```
+
+This sets up configs for Hyprland, Waybar, rofi, mako notifications, and more.
+
+### 9.4 Enable PipeWire Audio
 
 ```bash
 systemctl --user enable pipewire-pulse.socket
@@ -508,65 +593,15 @@ systemctl --user start pipewire-pulse.socket
 systemctl --user start wireplumber.service
 ```
 
-### 9.3 Create Hyprland Configuration
+### 9.5 Customize Configs (Optional)
+
+Your dotfiles are now symlinked. To customize:
 
 ```bash
-mkdir -p ~/.config/hypr
-cp /usr/share/hypr/hyprland.conf ~/.config/hypr/hyprland.conf
-```
-
-Edit your config:
-
-```bash
-vim ~/.config/hypr/hyprland.conf
-```
-
-Add/modify these essentials:
-
-```bash
-# Startup applications
-exec-once = waybar
-exec-once = hyprpaper
-exec-once = mako
-
-# Set your terminal
-$terminal = ghostty
-
-# Set your launcher
-$menu = rofi -show drun
-
-# Key bindings (add these or modify existing)
-bind = $mainMod, Return, exec, $terminal
-bind = $mainMod, D, exec, $menu
-bind = $mainMod, Q, killactive
-bind = $mainMod SHIFT, E, exit
-```
-
-### 9.4 Configure Hyprpaper
-
-```bash
-mkdir -p ~/.config/hypr
-vim ~/.config/hypr/hyprpaper.conf
-```
-
-Add:
-
-```
-preload = /path/to/your/wallpaper.jpg
-wallpaper = ,/path/to/your/wallpaper.jpg
-```
-
-### 9.5 Configure Waybar
-
-```bash
-mkdir -p ~/.config/waybar
-cp /etc/xdg/waybar/* ~/.config/waybar/
-```
-
-Edit as desired:
-
-```bash
-vim ~/.config/waybar/config.jsonc
+vim ~/.config/hypr/hyprland.conf    # Hyprland compositor
+vim ~/.config/hypr/hyprpaper.conf   # Wallpaper settings
+vim ~/.config/waybar/config         # Status bar
+vim ~/.config/waybar/style.css      # Waybar styling
 ```
 
 ### 9.6 Test Bluetooth
@@ -607,20 +642,6 @@ Or use the command line:
 ```bash
 pactl info
 wpctl status
-```
-
-### 9.8 Set Up SSH Keys
-
-```bash
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-```
-
-Copy your keys from backup/USB (e.g., `id_ed25519`, `id_ed25519.pub`), then set permissions:
-
-```bash
-chmod 600 ~/.ssh/id_ed25519
-chmod 644 ~/.ssh/id_ed25519.pub
 ```
 
 ---
@@ -673,7 +694,7 @@ nmcli device wifi connect "SSID" password "password"
 ### 10.1 Install AUR Helper (yay)
 
 ```bash
-sudo pacman -S --needed git base-devel
+sudo pacman -S --needed base-devel
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
@@ -709,6 +730,26 @@ Log out and back in, then:
 
 ```bash
 sdk install java
+```
+
+### 10.5 Set Up Claude Code
+
+Claude Code (installed via AUR in 10.2) is Anthropic's CLI coding assistant.
+
+Authenticate with your Anthropic account:
+
+```bash
+claude
+```
+
+Follow the prompts to log in via browser. Once authenticated, your status line and other settings are already configured via dotfiles (stowed in 9.3).
+
+Useful commands:
+
+```bash
+claude              # Start interactive session
+claude "question"   # Quick question
+claude -c           # Continue previous conversation
 ```
 
 ---
