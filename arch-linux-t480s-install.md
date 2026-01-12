@@ -172,7 +172,7 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 ### 5.1 Install Essential Packages
 
 ```bash
-pacstrap -K /mnt base linux linux-firmware intel-ucode networkmanager sudo terminus-font vim
+pacstrap -K /mnt base linux linux-firmware intel-ucode networkmanager plymouth sudo terminus-font vim
 ```
 
 ### 5.2 Generate fstab
@@ -269,7 +269,7 @@ vim /etc/mkinitcpio.conf
 Find the `HOOKS` line and replace it with:
 
 ```
-HOOKS=(base systemd autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems fsck)
+HOOKS=(base systemd plymouth autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems fsck)
 ```
 
 Regenerate initramfs:
@@ -315,7 +315,7 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet
+options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash
 ```
 
 Configure the loader:
@@ -603,6 +603,29 @@ vim ~/.config/hypr/hyprland.conf    # Hyprland compositor
 vim ~/.config/hypr/hyprpaper.conf   # Wallpaper settings
 vim ~/.config/waybar/config         # Status bar
 vim ~/.config/waybar/style.css      # Waybar styling
+```
+
+**Add Bluetooth applet to Hyprland** (in `hyprland.conf`):
+
+```
+exec-once = blueman-applet
+```
+
+**Add Bluetooth module to Waybar** (in `waybar/config`):
+
+Add `"bluetooth"` to your modules list, then configure:
+
+```json
+"bluetooth": {
+    "format": " {status}",
+    "format-connected": " {device_alias}",
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+    "tooltip-format": "{controller_alias}\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_battery_percentage}%",
+    "on-click": "blueman-manager"
+}
 ```
 
 ### 9.6 Test Bluetooth
