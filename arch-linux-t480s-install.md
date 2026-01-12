@@ -516,7 +516,7 @@ reboot
 
 ## Part 9: Post-Installation (as ben)
 
-After entering your encryption passphrase, log in as `ben` via regreet:
+After entering your encryption passphrase, log in as `ben` via regreet. Select **Hyprland** as the session (not "Hyprland (uwsm-managed)"):
 
 ### 9.1 Connect to Wi-Fi (if needed)
 
