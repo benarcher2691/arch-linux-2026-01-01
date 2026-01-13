@@ -16,7 +16,7 @@ A manual installation guide for Arch Linux with full disk encryption, Hyprland (
 | Compositor | Hyprland (Wayland) |
 | Status Bar | Waybar |
 | Launcher | rofi-wayland |
-| Wallpaper | hyprpaper |
+| Wallpaper | swww |
 | Audio | PipeWire |
 | Bluetooth | bluez + blueman |
 
@@ -488,7 +488,8 @@ pacman -S \
     grim \
     htop \
     hyprland \
-    hyprpaper \
+    imagemagick \
+    swww \
     jq \
     kitty \
     libreoffice-fresh \
@@ -722,7 +723,7 @@ Your dotfiles are now symlinked. To customize:
 
 ```bash
 vim ~/.config/hypr/hyprland.conf    # Hyprland compositor
-vim ~/.config/hypr/hyprpaper.conf   # Wallpaper settings
+# Wallpaper: swww is started in hyprland.conf, cycle with SUPER+W
 vim ~/.config/waybar/config         # Status bar
 vim ~/.config/waybar/style.css      # Waybar styling
 ```
@@ -755,6 +756,9 @@ wpctl status
 | `SUPER + 1-9` | Switch workspace |
 | `SUPER + SHIFT + 1-9` | Move window to workspace |
 | `SUPER + Arrow Keys` | Move focus |
+| `SUPER + F` | Toggle fullscreen |
+| `SUPER + W` | Cycle wallpaper |
+| `SUPER + SHIFT + Arrow Keys` | Swap windows |
 | `SUPER + SHIFT + E` | Exit Hyprland |
 
 ---
@@ -931,7 +935,7 @@ You now have a fully encrypted Arch Linux installation with:
 - Hyprland Wayland compositor
 - Waybar status bar
 - rofi-wayland application launcher
-- hyprpaper wallpaper manager
+- swww wallpaper daemon (SUPER+W to cycle)
 - PipeWire audio
 - Bluetooth support
 - greetd login manager with regreet (GUI greeter)
