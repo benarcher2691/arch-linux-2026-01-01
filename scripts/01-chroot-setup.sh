@@ -153,7 +153,7 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw quiet splash loglevel=3 vt.global_cursor_default=0 console=tty2 fbcon=vc:2-6
+options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw quiet splash
 EOF
 
 # LTS kernel (fallback)
@@ -162,7 +162,7 @@ title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
 initrd  /intel-ucode.img
 initrd  /initramfs-linux-lts.img
-options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw quiet splash loglevel=3 vt.global_cursor_default=0 console=tty2 fbcon=vc:2-6
+options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw quiet splash
 EOF
 
 # Loader configuration
