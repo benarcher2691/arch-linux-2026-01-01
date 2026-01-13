@@ -9,6 +9,11 @@
   - [x] Cleaner boot (quiet kernel params, plymouth splash?)
   - [x] More graphical greetd (regreet)
 
+## Soon
+
+- [ ] Fix stow symlink for hypr config (`cd ~/dotfiles && stow -R hypr`)
+- [ ] Investigate boot text flicker between greetd and Hyprland
+
 ## Future / Low Priority
 
 - [ ] Raspberry Pi Pico development toolchain
