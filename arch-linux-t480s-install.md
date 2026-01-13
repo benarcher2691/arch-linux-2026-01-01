@@ -236,7 +236,7 @@ echo "LANG=en_US.UTF-8" > /etc/locale.conf
 cat > /etc/vconsole.conf << EOF
 KEYMAP=us
 XKBLAYOUT=us
-FONT=ter-132b
+# FONT=ter-132b
 EOF
 ```
 
@@ -398,6 +398,7 @@ pacman -S \
     htop \
     hyprland \
     hyprpaper \
+    jq \
     kitty \
     libreoffice-fresh \
     mako \
@@ -426,6 +427,7 @@ pacman -S \
     wget \
     wireplumber \
     wl-clipboard \
+    wtype \
     xdg-desktop-portal-hyprland \
     yazi \
     zip
@@ -608,7 +610,7 @@ cd ~/dotfiles
 Stow all configurations (creates symlinks to ~/.config):
 
 ```bash
-stow bash claude ghostty git hypr mako rofi vim wallpapers waybar yazi
+stow bash claude ghostty git hypr mako rofi scripts vim wallpapers waybar yazi
 ```
 
 This sets up configs for Hyprland, Waybar, rofi, mako notifications, and more.
@@ -633,55 +635,8 @@ vim ~/.config/waybar/config         # Status bar
 vim ~/.config/waybar/style.css      # Waybar styling
 ```
 
-**Add Bluetooth applet to Hyprland** (in `hyprland.conf`):
-
-```
-exec-once = blueman-applet
-```
-
-**Add Bluetooth module to Waybar** (in `waybar/config`):
-
-Add `"bluetooth"` to your modules list, then configure:
-
-```json
-"bluetooth": {
-    "format": " {status}",
-    "format-connected": " {device_alias}",
-    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-    "tooltip-format": "{controller_alias}\n{num_connections} connected",
-    "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}",
-    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_battery_percentage}%",
-    "on-click": "blueman-manager"
-}
-```
-
 ### 9.6 Test Bluetooth
-
-```bash
-bluetoothctl
-```
-
-Inside bluetoothctl:
-
-```
-power on
-agent on
-default-agent
-scan on
-```
-
-Wait for your device to appear (e.g., `[NEW] Device XX:XX:XX:XX:XX:XX Rexcore Halo`), then:
-
-```
-scan off
-pair XX:XX:XX:XX:XX:XX
-connect XX:XX:XX:XX:XX:XX
-trust XX:XX:XX:XX:XX:XX
-exit
-```
-
-Use `trust` so it auto-reconnects in the future.
+to be done - just click in waybar and select = pair a device
 
 ### 9.7 Test Audio
 

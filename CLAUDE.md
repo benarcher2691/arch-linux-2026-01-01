@@ -15,6 +15,10 @@ A manual installation guide (`arch-linux-t480s-install.md`) with step-by-step co
 - Bluetooth (bluez + blueman)
 - NetworkManager
 
+## Dotfiles
+
+User dotfiles are stored in `~/dotfiles` and managed with GNU Stow. Each subdirectory (e.g., `hypr`, `waybar`, `rofi`) contains config files that get symlinked to `~/.config/` when stowed. The `scripts` directory contains user scripts that get symlinked to `~/.local/bin/`.
+
 ## Guidelines
 
 - Keep instructions copy-paste friendly with proper code blocks
