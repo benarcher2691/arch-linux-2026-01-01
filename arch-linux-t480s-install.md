@@ -11,7 +11,7 @@ A manual installation guide for Arch Linux with full disk encryption, Hyprland (
 | Bootloader | systemd-boot |
 | Encryption | LUKS with systemd initramfs |
 | Filesystem | ext4 **or** btrfs (choose one) |
-| Network | NetworkManager |
+| Network | NetworkManager + nm-applet |
 | Display Manager | greetd + regreet |
 | Compositor | Hyprland (Wayland) |
 | Status Bar | Waybar |
@@ -493,6 +493,7 @@ pacman -S \
     kitty \
     libreoffice-fresh \
     mako \
+    network-manager-applet \
     neovim \
     noto-fonts \
     openssh \
