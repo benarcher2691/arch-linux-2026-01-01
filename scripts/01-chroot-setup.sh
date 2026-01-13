@@ -108,10 +108,14 @@ sed -i 's/^HOOKS=.*/HOOKS=(base systemd plymouth autodetect microcode modconf km
 mkinitcpio -P
 
 #------------------------------------------------------------------------------
-# Set root password
+# Set root password (required for first boot)
 #------------------------------------------------------------------------------
 info "Set root password"
-passwd
+echo "You MUST set a root password to be able to log in after reboot."
+while ! passwd; do
+    warn "Password setting failed. Please try again."
+done
+echo "Root password set successfully."
 
 #------------------------------------------------------------------------------
 # Enable NetworkManager
@@ -124,6 +128,9 @@ systemctl enable NetworkManager
 #------------------------------------------------------------------------------
 info "Installing systemd-boot"
 bootctl install
+
+# Fix /boot permissions (suppress world-accessible warnings)
+chmod 700 /boot
 
 #------------------------------------------------------------------------------
 # Get UUID for boot entries

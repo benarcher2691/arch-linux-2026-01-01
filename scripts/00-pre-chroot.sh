@@ -161,6 +161,7 @@ findmnt -R /mnt
 # Install base system
 #------------------------------------------------------------------------------
 info "Installing base system (this may take a while)"
+echo "NOTE: A warning about /etc/vconsole.conf during mkinitcpio is expected and harmless."
 
 pacstrap -K /mnt \
     base \
