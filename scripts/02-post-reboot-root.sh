@@ -139,7 +139,7 @@ info "Installing yay (AUR helper)"
 
 YAY_DIR="/tmp/yay-install"
 rm -rf "$YAY_DIR"
-mkdir -p "$YAY_DIR"
+sudo -u "$USERNAME" mkdir -p "$YAY_DIR"
 
 # Clone and build as the new user
 sudo -u "$USERNAME" bash << EOF
