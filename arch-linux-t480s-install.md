@@ -10,6 +10,7 @@ A manual installation guide for Arch Linux with full disk encryption, Hyprland (
 | Boot Mode | UEFI |
 | Bootloader | systemd-boot |
 | Encryption | LUKS with systemd initramfs |
+| Filesystem | ext4 **or** btrfs (choose one) |
 | Network | NetworkManager |
 | Display Manager | greetd + regreet |
 | Compositor | Hyprland (Wayland) |
@@ -142,11 +143,15 @@ Enter your passphrase. This creates `/dev/mapper/cryptroot`.
 
 ## Part 4: Format and Mount
 
-### 4.1 Format Partitions
+**Choose either Option A (ext4) or Option B (btrfs):**
+
+- **ext4**: Traditional, stable, simple. No built-in snapshots.
+- **btrfs**: Modern, supports snapshots for easy rollbacks. Recommended if you want system snapshots.
+
+### 4.1 Format EFI Partition (both options)
 
 ```bash
 mkfs.fat -F32 /dev/nvme0n1p1
-mkfs.ext4 /dev/mapper/cryptroot
 ```
 
 ### 4.2 Test Encryption
@@ -158,12 +163,72 @@ cryptsetup close cryptroot
 cryptsetup open /dev/nvme0n1p2 cryptroot
 ```
 
-### 4.3 Mount Partitions
+---
+
+### Option A: ext4 Filesystem
+
+#### 4.3a Format Root (ext4)
+
+```bash
+mkfs.ext4 /dev/mapper/cryptroot
+```
+
+#### 4.4a Mount Partitions (ext4)
 
 ```bash
 mount /dev/mapper/cryptroot /mnt
 mount --mkdir /dev/nvme0n1p1 /mnt/boot
 ```
+
+**Skip to Part 5.**
+
+---
+
+### Option B: btrfs Filesystem
+
+#### 4.3b Format Root (btrfs)
+
+```bash
+mkfs.btrfs /dev/mapper/cryptroot
+```
+
+#### 4.4b Create Subvolumes
+
+Mount the btrfs root temporarily:
+
+```bash
+mount /dev/mapper/cryptroot /mnt
+```
+
+Create subvolumes (this layout works well with snapper for snapshots):
+
+```bash
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@var_log
+```
+
+Unmount:
+
+```bash
+umount /mnt
+```
+
+#### 4.5b Mount Subvolumes (btrfs)
+
+Mount with recommended options:
+
+```bash
+mount -o subvol=@,compress=zstd,noatime /dev/mapper/cryptroot /mnt
+mkdir -p /mnt/{boot,home,.snapshots,var/log}
+mount -o subvol=@home,compress=zstd,noatime /dev/mapper/cryptroot /mnt/home
+mount -o subvol=@snapshots,compress=zstd,noatime /dev/mapper/cryptroot /mnt/.snapshots
+mount -o subvol=@var_log,compress=zstd,noatime /dev/mapper/cryptroot /mnt/var/log
+mount /dev/nvme0n1p1 /mnt/boot
+```
+
+**Continue to Part 5.**
 
 ---
 
@@ -171,8 +236,16 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 
 ### 5.1 Install Essential Packages
 
+**For ext4:**
+
 ```bash
-pacstrap -K /mnt base linux linux-firmware intel-ucode networkmanager plymouth sudo terminus-font vim
+pacstrap -K /mnt base linux linux-lts linux-firmware intel-ucode networkmanager plymouth sudo terminus-font vim
+```
+
+**For btrfs** (adds btrfs-progs):
+
+```bash
+pacstrap -K /mnt base linux linux-lts linux-firmware intel-ucode networkmanager plymouth sudo terminus-font vim btrfs-progs
 ```
 
 ### 5.2 Generate fstab
@@ -302,7 +375,9 @@ Get the UUID of your encrypted partition:
 blkid -s UUID -o value /dev/nvme0n1p2
 ```
 
-Copy this UUID. Now create the boot entry:
+Copy this UUID. Now create the boot entries.
+
+**Main kernel entry:**
 
 ```bash
 vim /boot/loader/entries/arch.conf
@@ -315,6 +390,22 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
+options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash
+```
+
+**LTS kernel entry (fallback):**
+
+```bash
+vim /boot/loader/entries/arch-lts.conf
+```
+
+Add (same UUID):
+
+```
+title   Arch Linux (LTS)
+linux   /vmlinuz-linux-lts
+initrd  /intel-ucode.img
+initrd  /initramfs-linux-lts.img
 options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash
 ```
 
@@ -351,8 +442,8 @@ Remove the USB drive when the system restarts.
 
 ### 7.2 Verify Boot
 
-- You should see the systemd-boot menu
-- Select "Arch Linux"
+- You should see the systemd-boot menu (press Space or arrow keys if it auto-boots)
+- Select "Arch Linux" (or "Arch Linux (LTS)" if the main kernel has issues)
 - Enter your LUKS encryption passphrase
 - Log in as `root` with the password you set
 
@@ -696,6 +787,75 @@ nmcli device wifi connect "SSID" password "password"
 
 ---
 
+## Btrfs Snapshots (Optional)
+
+If you chose btrfs, you can set up automatic snapshots with snapper for easy system rollbacks.
+
+### Install Snapper
+
+```bash
+sudo pacman -S snapper snap-pac
+```
+
+### Configure Snapper
+
+Create a config for the root subvolume:
+
+```bash
+sudo snapper -c root create-config /
+```
+
+Edit the config to adjust snapshot limits:
+
+```bash
+sudo vim /etc/snapper/configs/root
+```
+
+Recommended settings:
+
+```
+TIMELINE_CREATE="yes"
+TIMELINE_CLEANUP="yes"
+TIMELINE_LIMIT_HOURLY="5"
+TIMELINE_LIMIT_DAILY="7"
+TIMELINE_LIMIT_WEEKLY="0"
+TIMELINE_LIMIT_MONTHLY="0"
+TIMELINE_LIMIT_YEARLY="0"
+```
+
+Enable the timer:
+
+```bash
+sudo systemctl enable --now snapper-timeline.timer
+sudo systemctl enable --now snapper-cleanup.timer
+```
+
+### Using Snapshots
+
+```bash
+sudo snapper -c root list                    # List snapshots
+sudo snapper -c root create -d "description" # Manual snapshot
+sudo snapper -c root undochange 1..5         # Undo changes between snapshots
+```
+
+The `snap-pac` package automatically creates pre/post snapshots when using pacman.
+
+### Rollback After Failed Update
+
+Boot from live USB, mount your btrfs partition, and restore a snapshot:
+
+```bash
+cryptsetup open /dev/nvme0n1p2 cryptroot
+mount /dev/mapper/cryptroot /mnt
+cd /mnt
+mv @ @.broken
+btrfs subvolume snapshot @snapshots/NUMBER/snapshot @
+umount /mnt
+reboot
+```
+
+---
+
 ## Part 10: AUR and Additional Software (as ben)
 
 ### 10.1 Install AUR Helper (yay)
@@ -766,6 +926,7 @@ claude -c           # Continue previous conversation
 You now have a fully encrypted Arch Linux installation with:
 
 - LUKS encryption with systemd-boot
+- ext4 or btrfs filesystem (with optional snapshots)
 - Hyprland Wayland compositor
 - Waybar status bar
 - rofi-wayland application launcher
