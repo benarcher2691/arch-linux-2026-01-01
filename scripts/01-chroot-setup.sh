@@ -115,9 +115,8 @@ echo "You MUST set a root password to be able to log in after reboot."
 while ! passwd; do
     warn "Password setting failed. Please try again."
 done
-# Verify root is not locked
-passwd -S root
 echo "Root password set successfully."
+sleep 1
 
 #------------------------------------------------------------------------------
 # Enable NetworkManager
@@ -133,7 +132,6 @@ bootctl install
 
 # Fix /boot permissions (suppress world-accessible warnings)
 chmod 700 /boot
-chmod -R go-rwx /boot
 
 #------------------------------------------------------------------------------
 # Get UUID for boot entries
