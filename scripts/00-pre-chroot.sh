@@ -185,6 +185,15 @@ echo "Generated fstab:"
 cat /mnt/etc/fstab
 
 #------------------------------------------------------------------------------
+# Create vconsole.conf (needed for mkinitcpio during kernel install)
+#------------------------------------------------------------------------------
+info "Creating vconsole.conf"
+cat > /mnt/etc/vconsole.conf << EOF
+KEYMAP=us
+XKBLAYOUT=us
+EOF
+
+#------------------------------------------------------------------------------
 # Copy scripts to new system
 #------------------------------------------------------------------------------
 info "Copying installation scripts to new system"

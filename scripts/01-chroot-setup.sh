@@ -47,8 +47,8 @@ if [[ $EUID -ne 0 ]]; then
     error "This script must be run as root"
 fi
 
-# Should be in chroot (no /run/archiso)
-if [[ -d /run/archiso ]]; then
+# Should be in chroot
+if ! systemd-detect-virt --chroot > /dev/null 2>&1; then
     error "This script should be run inside arch-chroot, not in the live environment"
 fi
 
