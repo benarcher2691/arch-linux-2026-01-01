@@ -245,6 +245,41 @@ done
 success "Dotfiles stowed"
 
 #------------------------------------------------------------------------------
+# Configure Git identity
+#------------------------------------------------------------------------------
+info "Configuring Git identity"
+
+echo
+echo "Git needs your name and email for commits."
+echo "This will be visible in your commit history."
+echo
+
+while true; do
+    read -p "Enter your full name: " GIT_NAME
+    read -p "Enter your email: " GIT_EMAIL
+
+    echo
+    echo "You entered:"
+    echo "  Name:  $GIT_NAME"
+    echo "  Email: $GIT_EMAIL"
+    echo
+    read -p "Is this correct? [Y/n/q] " -n 1 -r
+    echo
+
+    if [[ $REPLY =~ ^[Qq]$ ]]; then
+        warn "Skipping git configuration"
+        break
+    elif [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        git config --global user.name "$GIT_NAME"
+        git config --global user.email "$GIT_EMAIL"
+        success "Git identity configured"
+        break
+    fi
+    echo "Let's try again..."
+    echo
+done
+
+#------------------------------------------------------------------------------
 # Enable PipeWire audio
 #------------------------------------------------------------------------------
 info "Enabling PipeWire audio services"
