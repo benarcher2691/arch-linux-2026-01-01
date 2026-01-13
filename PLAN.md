@@ -11,8 +11,8 @@
 
 ## Soon
 
-- [ ] Fix stow symlink for hypr config (`cd ~/dotfiles && stow -R hypr`)
-- [ ] Investigate boot text flicker between greetd and Hyprland
+- [x] Fix stow symlink for hypr config (was working correctly - stow uses directory-level symlinks)
+- [x] Investigate boot text flicker between greetd and Hyprland (fixed: greetd vt=7, kernel fbcon=vc:2-6)
 
 ## Future / Low Priority
 

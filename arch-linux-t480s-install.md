@@ -390,8 +390,15 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash
+options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash loglevel=3 vt.global_cursor_default=0 console=tty2 fbcon=vc:2-6
 ```
+
+Kernel parameters explained:
+- `quiet splash` - Suppress most boot messages, show plymouth splash
+- `loglevel=3` - Only show error messages (reduces console noise)
+- `vt.global_cursor_default=0` - Hide text cursor
+- `console=tty2` - Redirect console messages to tty2
+- `fbcon=vc:2-6` - Restrict framebuffer console to VTs 2-6 (keeps VT7 clean for greeter)
 
 **LTS kernel entry (fallback):**
 
@@ -406,7 +413,7 @@ title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
 initrd  /intel-ucode.img
 initrd  /initramfs-linux-lts.img
-options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash
+options rd.luks.name=YOUR-UUID-HERE=cryptroot root=/dev/mapper/cryptroot rw quiet splash loglevel=3 vt.global_cursor_default=0 console=tty2 fbcon=vc:2-6
 ```
 
 Configure the loader:
@@ -594,12 +601,14 @@ Replace contents with:
 
 ```toml
 [terminal]
-vt = 1
+vt = 7
 
 [default_session]
 command = "cage -s -- regreet"
 user = "greeter"
 ```
+
+Using VT 7 (instead of VT 1) prevents console message flicker during login.
 
 ### 8.8 Reboot to Desktop
 
