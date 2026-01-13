@@ -101,8 +101,8 @@ info "Configuring mkinitcpio"
 # Backup original
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.bak
 
-# Set HOOKS for systemd-based initramfs with encryption
-sed -i 's/^HOOKS=.*/HOOKS=(base systemd plymouth autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+# Set HOOKS for systemd-based initramfs with encryption (no plymouth for initial setup)
+sed -i 's/^HOOKS=.*/HOOKS=(base systemd autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 
 # Regenerate initramfs
 mkinitcpio -P
@@ -115,6 +115,8 @@ echo "You MUST set a root password to be able to log in after reboot."
 while ! passwd; do
     warn "Password setting failed. Please try again."
 done
+# Verify root is not locked
+passwd -S root
 echo "Root password set successfully."
 
 #------------------------------------------------------------------------------
@@ -131,6 +133,7 @@ bootctl install
 
 # Fix /boot permissions (suppress world-accessible warnings)
 chmod 700 /boot
+chmod -R go-rwx /boot
 
 #------------------------------------------------------------------------------
 # Get UUID for boot entries
@@ -153,16 +156,16 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw quiet splash
+options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw
 EOF
 
-# LTS kernel (fallback)
+# LTS kernel (fallback/debug - no quiet)
 cat > /boot/loader/entries/arch-lts.conf << EOF
 title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
 initrd  /intel-ucode.img
 initrd  /initramfs-linux-lts.img
-options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw quiet splash
+options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw
 EOF
 
 # Loader configuration
