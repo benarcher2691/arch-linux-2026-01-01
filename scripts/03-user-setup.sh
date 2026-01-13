@@ -270,9 +270,13 @@ while true; do
         warn "Skipping git configuration"
         break
     elif [[ ! $REPLY =~ ^[Nn]$ ]]; then
-        git config --global user.name "$GIT_NAME"
-        git config --global user.email "$GIT_EMAIL"
-        success "Git identity configured"
+        # Write to .gitconfig.local (included by stowed .gitconfig)
+        cat > "$HOME/.gitconfig.local" << EOF
+[user]
+	name = $GIT_NAME
+	email = $GIT_EMAIL
+EOF
+        success "Git identity configured in ~/.gitconfig.local"
         break
     fi
     echo "Let's try again..."
