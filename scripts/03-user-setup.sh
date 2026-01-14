@@ -207,7 +207,7 @@ info "Authenticating with GitHub CLI"
 if gh auth status &>/dev/null; then
     warn "Already authenticated with GitHub CLI"
 else
-    gh auth login
+    gh auth login --web
 fi
 
 #------------------------------------------------------------------------------
@@ -235,10 +235,18 @@ info "Stowing dotfiles packages"
 
 STOW_PACKAGES=(bash claude ghostty git hypr mako rofi scripts vim wallpapers waybar yazi)
 
+# Backup existing configs that would conflict with stow
+for pkg in "${STOW_PACKAGES[@]}"; do
+    if [[ -d "$HOME/.config/$pkg" ]] && [[ ! -L "$HOME/.config/$pkg" ]]; then
+        echo "Backing up existing $pkg config..."
+        mv "$HOME/.config/$pkg" "$HOME/.config/${pkg}_bak"
+    fi
+done
+
 for pkg in "${STOW_PACKAGES[@]}"; do
     if [[ -d "$pkg" ]]; then
         echo "Stowing $pkg..."
-        stow "$pkg" 2>/dev/null || warn "Failed to stow $pkg (may already exist)"
+        stow "$pkg" || warn "Failed to stow $pkg"
     fi
 done
 
