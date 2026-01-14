@@ -102,8 +102,10 @@ info "Configuring mkinitcpio"
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.bak
 
 # Set HOOKS for systemd-based initramfs with encryption
+# Note: sd-plymouth (not plymouth) for systemd initramfs
+# Note: keyboard before autodetect to ensure it's included
 # Note: no fsck (btrfs handles its own integrity)
-sed -i 's/^HOOKS=.*/HOOKS=(base systemd plymouth autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems)/' /etc/mkinitcpio.conf
+sed -i 's/^HOOKS=.*/HOOKS=(base systemd sd-plymouth keyboard autodetect microcode modconf kms keymap sd-vconsole block sd-encrypt filesystems)/' /etc/mkinitcpio.conf
 
 # Regenerate initramfs
 mkinitcpio -P
