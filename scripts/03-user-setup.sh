@@ -243,6 +243,14 @@ for pkg in "${STOW_PACKAGES[@]}"; do
     fi
 done
 
+# Backup bash dotfiles in $HOME (not in .config)
+for f in .bashrc .bash_profile .bash_logout; do
+    if [[ -f "$HOME/$f" ]] && [[ ! -L "$HOME/$f" ]]; then
+        echo "Backing up existing $f..."
+        mv "$HOME/$f" "$HOME/${f}_bak"
+    fi
+done
+
 for pkg in "${STOW_PACKAGES[@]}"; do
     if [[ -d "$pkg" ]]; then
         echo "Stowing $pkg..."
