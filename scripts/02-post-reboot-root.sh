@@ -205,6 +205,6 @@ echo "Next steps:"
 echo "  1. reboot"
 echo "  2. Log in via regreet as '$USERNAME'"
 echo "  3. Select 'Hyprland' as session"
-echo "  4. Open terminal (SUPER+Return)"
+echo "  4. Open terminal (SUPER+Q)"
 echo "  5. cd ~/arch-setup && ./03-user-setup.sh"
 echo
