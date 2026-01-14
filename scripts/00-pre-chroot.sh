@@ -161,10 +161,19 @@ findmnt -R /mnt
 # Install base system
 #------------------------------------------------------------------------------
 info "Installing base system (this may take a while)"
-echo "NOTE: A warning about /etc/vconsole.conf during mkinitcpio is expected and harmless."
 
-pacstrap -K /mnt \
-    base \
+# Install base first to create directory structure
+pacstrap -K /mnt base
+
+# Create vconsole.conf before kernel install (avoids mkinitcpio warning)
+info "Creating vconsole.conf"
+cat > /mnt/etc/vconsole.conf << EOF
+KEYMAP=us
+XKBLAYOUT=us
+EOF
+
+# Install remaining packages (kernels will now find vconsole.conf)
+pacstrap /mnt \
     linux \
     linux-lts \
     linux-firmware \
@@ -184,15 +193,6 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "Generated fstab:"
 cat /mnt/etc/fstab
-
-#------------------------------------------------------------------------------
-# Create vconsole.conf (needed for mkinitcpio during kernel install)
-#------------------------------------------------------------------------------
-info "Creating vconsole.conf"
-cat > /mnt/etc/vconsole.conf << EOF
-KEYMAP=us
-XKBLAYOUT=us
-EOF
 
 #------------------------------------------------------------------------------
 # Copy scripts to new system
