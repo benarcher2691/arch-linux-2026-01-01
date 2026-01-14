@@ -155,10 +155,10 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash
+options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash loglevel=3 vt.global_cursor_default=0 console=tty2 fbcon=vc:2-6
 EOF
 
-# LTS kernel (verbose for debugging)
+# LTS kernel (verbose for debugging - no flicker params)
 cat > /boot/loader/entries/arch-lts.conf << EOF
 title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
