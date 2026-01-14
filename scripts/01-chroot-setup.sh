@@ -102,10 +102,8 @@ info "Configuring mkinitcpio"
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.bak
 
 # Set HOOKS for systemd-based initramfs with encryption
-# Note: sd-plymouth (not plymouth) for systemd initramfs
-# Note: keyboard before autodetect to ensure it's included
 # Note: no fsck (btrfs handles its own integrity)
-sed -i 's/^HOOKS=.*/HOOKS=(base systemd sd-plymouth keyboard autodetect microcode modconf kms keymap sd-vconsole block sd-encrypt filesystems)/' /etc/mkinitcpio.conf
+sed -i 's/^HOOKS=.*/HOOKS=(base systemd plymouth autodetect microcode modconf kms keyboard keymap sd-vconsole block sd-encrypt filesystems)/' /etc/mkinitcpio.conf
 
 # Regenerate initramfs
 mkinitcpio -P
@@ -157,10 +155,10 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash loglevel=3 vt.global_cursor_default=0 console=tty2 fbcon=vc:2-6
+options rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash
 EOF
 
-# LTS kernel (verbose for debugging - no flicker params)
+# LTS kernel (verbose for debugging)
 cat > /boot/loader/entries/arch-lts.conf << EOF
 title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
