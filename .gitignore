@@ -1,0 +1,3 @@
+# Package cache for v3 script (too large for git)
+scripts/v3/pkg-cache/*.pkg.tar.zst
+scripts/v3/pkg-cache/*.pkg.tar.xz
