@@ -200,8 +200,7 @@ info "Configuring system in chroot..."
 LUKS_UUID=$(blkid -s UUID -o value "${CRYPT_PART}")
 
 # Create chroot setup script - first write variable definitions (unquoted heredoc expands them)
-mkdir -p /mnt/tmp
-cat > /mnt/tmp/chroot-setup.sh << VARS_END
+cat > /mnt/root/chroot-setup.sh << VARS_END
 #!/bin/bash
 set -e
 # Variables injected from installer
@@ -214,7 +213,7 @@ LUKS_UUID="${LUKS_UUID}"
 VARS_END
 
 # Append rest of script (quoted heredoc preserves nested heredocs and $vars)
-cat >> /mnt/tmp/chroot-setup.sh << 'CHROOT_END'
+cat >> /mnt/root/chroot-setup.sh << 'CHROOT_END'
 
 # Timezone
 ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
@@ -753,9 +752,9 @@ echo ""
 CHROOT_END
 
 # Make script executable and run it
-chmod +x /mnt/tmp/chroot-setup.sh
-arch-chroot /mnt /tmp/chroot-setup.sh
-rm /mnt/tmp/chroot-setup.sh
+chmod +x /mnt/root/chroot-setup.sh
+arch-chroot /mnt /root/chroot-setup.sh
+rm /mnt/root/chroot-setup.sh
 
 # Set passwords (must be outside heredoc for interactive input)
 info "Setting password for root..."
