@@ -16,7 +16,7 @@ set -euxo pipefail
 # =============================================================================
 
 DISK="/dev/nvme0n1"
-HOSTNAME="t480s"
+MYHOSTNAME="t480s"
 USERNAME="ben"
 TIMEZONE="Europe/Stockholm"
 LOCALE="en_US.UTF-8"
@@ -53,7 +53,7 @@ echo "╚═══════════════════════�
 echo -e "${NC}"
 
 info "Target disk: ${DISK}"
-info "Hostname: ${HOSTNAME}"
+info "Hostname: ${MYHOSTNAME}"
 info "Username: ${USERNAME}"
 info "Timezone: ${TIMEZONE}"
 echo ""
@@ -199,8 +199,22 @@ info "Configuring system in chroot..."
 # Get LUKS UUID for bootloader
 LUKS_UUID=$(blkid -s UUID -o value "${CRYPT_PART}")
 
-cat << CHROOT_EOF | arch-chroot /mnt /bin/bash
+# Create chroot setup script - first write variable definitions (unquoted heredoc expands them)
+mkdir -p /mnt/tmp
+cat > /mnt/tmp/chroot-setup.sh << VARS_END
+#!/bin/bash
 set -e
+# Variables injected from installer
+TIMEZONE="${TIMEZONE}"
+LOCALE="${LOCALE}"
+KEYMAP="${KEYMAP}"
+MYHOSTNAME="${MYHOSTNAME}"
+USERNAME="${USERNAME}"
+LUKS_UUID="${LUKS_UUID}"
+VARS_END
+
+# Append rest of script (quoted heredoc preserves nested heredocs and $vars)
+cat >> /mnt/tmp/chroot-setup.sh << 'CHROOT_END'
 
 # Timezone
 ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
@@ -213,11 +227,11 @@ echo "LANG=${LOCALE}" > /etc/locale.conf
 echo "KEYMAP=${KEYMAP}" > /etc/vconsole.conf
 
 # Hostname
-echo "${HOSTNAME}" > /etc/hostname
+echo "${MYHOSTNAME}" > /etc/hostname
 cat > /etc/hosts << EOF
 127.0.0.1   localhost
 ::1         localhost
-127.0.1.1   ${HOSTNAME}.localdomain ${HOSTNAME}
+127.0.1.1   ${MYHOSTNAME}.localdomain ${MYHOSTNAME}
 EOF
 
 # Install additional packages
@@ -736,7 +750,12 @@ echo "Boot entries:"
 ls -la /efi/loader/entries/
 echo ""
 
-CHROOT_EOF
+CHROOT_END
+
+# Make script executable and run it
+chmod +x /mnt/tmp/chroot-setup.sh
+arch-chroot /mnt /tmp/chroot-setup.sh
+rm /mnt/tmp/chroot-setup.sh
 
 # Set passwords (must be outside heredoc for interactive input)
 info "Setting password for root..."
