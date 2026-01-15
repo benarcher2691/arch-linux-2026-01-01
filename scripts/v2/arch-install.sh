@@ -221,7 +221,7 @@ EOF
 
 # Install additional packages
 pacman -S --noconfirm \
-    plymouth \
+    kitty \
     hyprland \
     waybar \
     xdg-desktop-portal-hyprland \
@@ -262,11 +262,8 @@ cat > /etc/mkinitcpio.conf << EOF
 MODULES=(i915)
 BINARIES=()
 FILES=()
-HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole sd-encrypt block filesystems fsck plymouth)
+HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole sd-encrypt block filesystems fsck)
 EOF
-
-# Plymouth theme (don't rebuild yet, mkinitcpio -P will do it later)
-plymouth-set-default-theme spinner
 
 # Install systemd-boot
 bootctl install
@@ -287,7 +284,7 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=${LUKS_UUID}=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash
+options rd.luks.name=${LUKS_UUID}=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet
 EOF
 
 # Main kernel fallback
@@ -305,7 +302,7 @@ title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
 initrd  /intel-ucode.img
 initrd  /initramfs-linux-lts.img
-options rd.luks.name=${LUKS_UUID}=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet splash
+options rd.luks.name=${LUKS_UUID}=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet
 EOF
 
 # LTS kernel fallback
@@ -374,7 +371,7 @@ rm -rf /.snapshots
 snapper --no-dbus -c root create-config /
 btrfs subvolume delete /.snapshots 2>/dev/null || true
 mkdir -p /.snapshots
-mount -o subvol=@snapshots /dev/mapper/cryptroot /.snapshots
+mount -o noatime,compress=zstd:1,space_cache=v2,discard=async,subvol=@snapshots /dev/mapper/cryptroot /.snapshots
 chmod 750 /.snapshots
 
 # Snapper configuration for daily snapshots
@@ -481,7 +478,7 @@ windowrulev2 = suppressevent maximize, class:.*
 # Key bindings
 \$mainMod = SUPER
 
-bind = \$mainMod, Return, exec, ghostty
+bind = \$mainMod, Return, exec, kitty
 bind = \$mainMod, Q, killactive,
 bind = \$mainMod SHIFT, E, exit,
 bind = \$mainMod, E, exec, thunar
@@ -689,16 +686,6 @@ window#waybar {
 }
 EOF
 
-# Ghostty config
-mkdir -p /home/${USERNAME}/.config/ghostty
-cat > /home/${USERNAME}/.config/ghostty/config << EOF
-font-family = JetBrainsMono Nerd Font
-font-size = 12
-theme = tokyonight
-window-decoration = false
-background-opacity = 0.95
-EOF
-
 # Fix ownership
 chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
@@ -716,7 +703,7 @@ cd ~
 rm -rf /tmp/yay-bin
 
 echo "Installing AUR packages..."
-yay -S --noconfirm ghostty-bin brave-bin blueman
+yay -S --noconfirm brave-bin blueman
 
 echo ""
 echo "Post-installation complete!"
@@ -725,14 +712,6 @@ rm -f ~/post-install.sh
 EOF
 chmod +x /home/${USERNAME}/post-install.sh
 chown ${USERNAME}:${USERNAME} /home/${USERNAME}/post-install.sh
-
-echo ""
-echo "Setting password for root..."
-passwd
-
-echo ""
-echo "Setting password for ${USERNAME}..."
-passwd ${USERNAME}
 
 # Final verification
 echo ""
@@ -745,6 +724,13 @@ ls -la /efi/loader/entries/
 echo ""
 
 CHROOT_EOF
+
+# Set passwords (must be outside heredoc for interactive input)
+info "Setting password for root..."
+arch-chroot /mnt passwd
+
+info "Setting password for ${USERNAME}..."
+arch-chroot /mnt passwd ${USERNAME}
 
 success "System configuration complete"
 
@@ -767,11 +753,11 @@ echo "  2. Reboot: ${YELLOW}reboot${NC}"
 echo "  3. Enter your LUKS passphrase at boot"
 echo "  4. Login as '${USERNAME}'"
 echo "  5. Run the post-install script: ${YELLOW}./post-install.sh${NC}"
-echo "     (This installs yay, Ghostty, Brave, and Blueman from AUR)"
+echo "     (This installs yay, Brave, and Blueman from AUR)"
 echo "  6. Start Hyprland: ${YELLOW}Hyprland${NC}"
 echo ""
 echo -e "${BLUE}Key bindings (in Hyprland):${NC}"
-echo "  SUPER + Enter     - Terminal (ghostty)"
+echo "  SUPER + Enter     - Terminal (kitty)"
 echo "  SUPER + D         - Application launcher (wofi)"
 echo "  SUPER + Q         - Close window"
 echo "  SUPER + 1-0       - Switch workspace"
