@@ -7,7 +7,7 @@
 #   chmod +x arch-install.sh
 #   ./arch-install.sh
 #
-set -euxo pipefail
+set -euo pipefail
 
 # set -e
 
@@ -420,11 +420,9 @@ EOF
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
-echo "DEBUG 1: snapper done, about to create hypr config"
 
 # Basic Hyprland config for user
 mkdir -p /home/${USERNAME}/.config/hypr
-echo "DEBUG 2: hypr dir created, starting hyprland.conf heredoc"
 cat > /home/${USERNAME}/.config/hypr/hyprland.conf << EOF
 # Hyprland Configuration for Lenovo T480s
 
@@ -555,11 +553,9 @@ bind = , XF86AudioNext, exec, playerctl next
 bind = , Print, exec, grim - | wl-copy
 bind = SHIFT, Print, exec, grim -g "\$(slurp)" - | wl-copy
 EOF
-echo "DEBUG 3: hyprland.conf heredoc done"
 
 # Waybar config
 mkdir -p /home/${USERNAME}/.config/waybar
-echo "DEBUG 4: starting waybar/config heredoc"
 cat > /home/${USERNAME}/.config/waybar/config << EOF
 {
     "layer": "top",
@@ -642,9 +638,7 @@ cat > /home/${USERNAME}/.config/waybar/config << EOF
     }
 }
 EOF
-echo "DEBUG 5: waybar/config heredoc done"
 
-echo "DEBUG 6: starting waybar/style.css heredoc"
 cat > /home/${USERNAME}/.config/waybar/style.css << EOF
 * {
     font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free";
@@ -707,16 +701,14 @@ window#waybar {
     }
 }
 EOF
-echo "DEBUG 7: waybar/style.css heredoc done"
 
 # Fix ownership
 chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
 # Create post-install script for AUR packages (run as user after first boot)
-echo "DEBUG 8: starting post-install.sh heredoc"
 cat > /home/${USERNAME}/post-install.sh << EOF
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 echo "Installing yay (AUR helper)..."
 cd /tmp
@@ -734,11 +726,9 @@ echo "Post-installation complete!"
 echo "You can now start Hyprland by typing: Hyprland"
 rm -f ~/post-install.sh
 EOF
-echo "DEBUG 9: post-install.sh heredoc done"
 chmod +x /home/${USERNAME}/post-install.sh
 chown ${USERNAME}:${USERNAME} /home/${USERNAME}/post-install.sh
 
-echo "DEBUG 10: about to run verification"
 # Final verification
 echo ""
 echo "=== VERIFICATION ==="
