@@ -221,6 +221,7 @@ EOF
 
 # Install additional packages
 pacman -S --noconfirm \
+    ghostty \
     kitty \
     hyprland \
     waybar \
@@ -257,7 +258,7 @@ pacman -S --noconfirm \
     snapper \
     snap-pac
 
-# mkinitcpio configuration for LUKS + Plymouth
+# mkinitcpio configuration for LUKS
 cat > /etc/mkinitcpio.conf << EOF
 MODULES=(i915)
 BINARIES=()
@@ -457,7 +458,7 @@ decoration {
 
 # Animations
 animations {
-    enabled = true
+    enabled = false
     bezier = myBezier, 0.05, 0.9, 0.1, 1.05
     animation = windows, 1, 7, myBezier
     animation = windowsOut, 1, 7, default, popin 80%
@@ -546,39 +547,39 @@ cat > /home/${USERNAME}/.config/waybar/config << EOF
     "position": "top",
     "height": 30,
     "spacing": 4,
-    
+
     "modules-left": ["hyprland/workspaces", "hyprland/window"],
     "modules-center": ["clock"],
     "modules-right": ["pulseaudio", "bluetooth", "network", "cpu", "memory", "backlight", "battery", "tray"],
-    
+
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate"
     },
-    
+
     "hyprland/window": {
         "max-length": 50
     },
-    
+
     "clock": {
         "format": "{:%Y-%m-%d %H:%M}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
-    
+
     "cpu": {
         "format": " {usage}%",
         "tooltip": false
     },
-    
+
     "memory": {
         "format": " {}%"
     },
-    
+
     "backlight": {
         "format": "{icon} {percent}%",
         "format-icons": ["", "", "", "", "", "", "", "", ""]
     },
-    
+
     "battery": {
         "states": {
             "warning": 30,
@@ -589,14 +590,14 @@ cat > /home/${USERNAME}/.config/waybar/config << EOF
         "format-plugged": " {capacity}%",
         "format-icons": ["", "", "", "", ""]
     },
-    
+
     "network": {
         "format-wifi": " {signalStrength}%",
         "format-ethernet": " {ipaddr}",
         "format-disconnected": "⚠ Disconnected",
         "tooltip-format": "{ifname}: {ipaddr}"
     },
-    
+
     "bluetooth": {
         "format": " {status}",
         "format-connected": " {device_alias}",
@@ -607,7 +608,7 @@ cat > /home/${USERNAME}/.config/waybar/config << EOF
         "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
         "on-click": "blueman-manager"
     },
-    
+
     "pulseaudio": {
         "format": "{icon} {volume}%",
         "format-muted": "",
@@ -616,7 +617,7 @@ cat > /home/${USERNAME}/.config/waybar/config << EOF
         },
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
     },
-    
+
     "tray": {
         "spacing": 10
     }
