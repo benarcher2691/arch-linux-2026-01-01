@@ -165,20 +165,20 @@ info "Installing base system..."
 pacstrap -K /mnt \
     base \
     base-devel \
+    btrfs-progs \
+    git \
+    intel-ucode \
     linux \
+    linux-firmware \
     linux-headers \
     linux-lts \
     linux-lts-headers \
-    linux-firmware \
-    intel-ucode \
-    btrfs-progs \
-    networkmanager \
-    vim \
-    nano \
-    git \
-    sudo \
     man-db \
-    man-pages
+    man-pages \
+    nano \
+    networkmanager \
+    sudo \
+    vim
 
 success "Base system installed"
 
@@ -235,42 +235,44 @@ EOF
 
 # Install additional packages
 pacman -S --noconfirm \
+    bluez \
+    bluez-utils \
+    brightnessctl \
+    cups \
+    cups-pdf \
+    dosfstools \
+    efibootmgr \
+    exfatprogs \
     ghostty \
-    kitty \
+    gnupg \
+    grim \
     hyprland \
-    waybar \
-    xdg-desktop-portal-hyprland \
-    xdg-desktop-portal-gtk \
-    xdg-user-dirs \
+    kitty \
+    mako \
+    noto-fonts \
+    noto-fonts-emoji \
+    openssh \
+    pipewire \
+    pipewire-alsa \
+    pipewire-jack \
+    pipewire-pulse \
+    playerctl \
     polkit-kde-agent \
     qt5-wayland \
     qt6-wayland \
-    pipewire \
-    pipewire-alsa \
-    pipewire-pulse \
-    pipewire-jack \
-    wireplumber \
-    wofi \
-    mako \
-    grim \
     slurp \
-    wl-clipboard \
-    brightnessctl \
-    playerctl \
+    snap-pac \
+    snapper \
+    stow \
     ttf-font-awesome \
     ttf-jetbrains-mono-nerd \
-    noto-fonts \
-    noto-fonts-emoji \
-    efibootmgr \
-    dosfstools \
-    gnupg \
-    openssh \
-    bluez \
-    bluez-utils \
-    cups \
-    cups-pdf \
-    snapper \
-    snap-pac
+    waybar \
+    wireplumber \
+    wl-clipboard \
+    wofi \
+    xdg-desktop-portal-gtk \
+    xdg-desktop-portal-hyprland \
+    xdg-user-dirs
 
 # mkinitcpio configuration for LUKS
 cat > /etc/mkinitcpio.conf << EOF
