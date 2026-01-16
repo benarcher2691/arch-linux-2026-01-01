@@ -448,30 +448,6 @@ systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
 
-# Create post-install script for AUR packages (run as user after first boot)
-cat > /home/${USERNAME}/post-install.sh << EOF
-#!/bin/bash
-set -euo pipefail
-
-echo "Installing yay (AUR helper)..."
-cd /tmp
-git clone https://aur.archlinux.org/yay-bin.git
-cd yay-bin
-makepkg -si --noconfirm
-cd ~
-rm -rf /tmp/yay-bin
-
-echo "Installing AUR packages..."
-yay -S --noconfirm brave-bin blueman
-
-echo ""
-echo "Post-installation complete!"
-echo "You can now start Hyprland by typing: Hyprland"
-rm -f ~/post-install.sh
-EOF
-chmod +x /home/${USERNAME}/post-install.sh
-chown ${USERNAME}:${USERNAME} /home/${USERNAME}/post-install.sh
-
 # Final verification
 echo ""
 echo "=== VERIFICATION ==="
@@ -536,9 +512,8 @@ echo "  1. Remove the USB installation media"
 echo -e "  2. Reboot: ${YELLOW}reboot${NC}"
 echo "  3. Enter your LUKS passphrase at boot"
 echo "  4. Login as '${USERNAME}'"
-echo -e "  5. Run the post-install script: ${YELLOW}./post-install.sh${NC}"
-echo "     (This installs yay, Brave, and Blueman from AUR)"
-echo -e "  6. Start Hyprland: ${YELLOW}Hyprland${NC}"
+echo "  5. Stow dotfiles and install AUR packages (see README)"
+echo -e "  6. Start Hyprland: ${YELLOW}start-hyprland${NC}"
 echo ""
 echo -e "${BLUE}Key bindings (in Hyprland):${NC}"
 echo "  SUPER + Enter     - Terminal (kitty)"
