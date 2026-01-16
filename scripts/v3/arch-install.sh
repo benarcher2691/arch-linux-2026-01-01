@@ -71,11 +71,18 @@ echo ""
 ping -c 1 archlinux.org &>/dev/null || error "No internet connection"
 
 # Detect USB device for package cache (must be done BEFORE we mount /mnt)
+# WARNING: If running from /mnt/*, the USB gets shadowed when we mount cryptroot.
+# Bash may fail to read rest of script. Mount USB at /run/archusb to avoid this.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 USB_DEVICE=""
 if [[ -f "${SCRIPT_DIR}/pkg-cache.tar" ]]; then
     USB_DEVICE=$(df "${SCRIPT_DIR}" | tail -1 | awk '{print $1}')
     info "Found package cache on ${USB_DEVICE}"
+    if [[ "${SCRIPT_DIR}" == /mnt/* ]]; then
+        warn "Script running from /mnt/* - this may cause issues!"
+        warn "Recommended: mount USB at /run/archusb and run from there"
+        sleep 3
+    fi
 fi
 
 warn "This will ERASE ALL DATA on ${DISK}!"
@@ -172,10 +179,17 @@ success "Filesystems mounted"
 # Extract cached packages if USB device was detected earlier
 USE_CACHE=""
 if [[ -n "${USB_DEVICE}" ]]; then
-    info "Re-mounting USB at /run/archusb..."
-    mkdir -p /run/archusb
-    mount "${USB_DEVICE}" /run/archusb
-    PKG_CACHE_TAR="/run/archusb/pkg-cache.tar"
+    # If script was under /mnt/*, it's now shadowed - must remount device
+    # If script was elsewhere (e.g., /run/media), use original path
+    if [[ "${SCRIPT_DIR}" == /mnt/* ]]; then
+        info "Re-mounting USB at /run/archusb..."
+        mkdir -p /run/archusb
+        mount "${USB_DEVICE}" /run/archusb || { warn "Failed to mount USB"; USB_DEVICE=""; }
+        PKG_CACHE_TAR="/run/archusb/pkg-cache.tar"
+    else
+        # USB still accessible at original location
+        PKG_CACHE_TAR="${SCRIPT_DIR}/pkg-cache.tar"
+    fi
 
     if [[ -f "${PKG_CACHE_TAR}" ]]; then
         info "Extracting cached packages..."
