@@ -173,12 +173,15 @@ if [[ -f "${PKG_CACHE_TAR}" ]]; then
     mkdir -p /mnt/var/cache/pacman/pkg
     tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
     # Symlink host cache to target cache (for pacstrap)
+    mkdir -p /var/cache/pacman
     rm -rf /var/cache/pacman/pkg
     ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
     success "Package cache ready ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
     USE_CACHE="-c"
+    sleep 5
 else
     warn "No package cache found at ${PKG_CACHE_TAR} - will download packages"
+    sleep 5
 fi
 
 info "Installing base system..."
