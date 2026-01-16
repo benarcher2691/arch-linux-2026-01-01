@@ -168,10 +168,14 @@ PKG_CACHE_TAR="${SCRIPT_DIR}/pkg-cache.tar"
 # Extract cached packages if available (speeds up installation)
 USE_CACHE=""
 if [[ -f "${PKG_CACHE_TAR}" ]]; then
-    info "Extracting cached packages to host cache..."
-    mkdir -p /var/cache/pacman/pkg
-    tar xf "${PKG_CACHE_TAR}" -C /var/cache/pacman/pkg/
-    success "Package cache extracted ($(ls /var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
+    info "Extracting cached packages..."
+    # Extract to target cache (for chroot pacman -S)
+    mkdir -p /mnt/var/cache/pacman/pkg
+    tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
+    # Symlink host cache to target cache (for pacstrap)
+    rm -rf /var/cache/pacman/pkg
+    ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
+    success "Package cache ready ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
     USE_CACHE="-c"
 else
     warn "No package cache found at ${PKG_CACHE_TAR} - will download packages"
