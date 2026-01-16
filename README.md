@@ -71,13 +71,13 @@ find ~/dotfiles -name '._*' -delete   # Remove macOS resource forks
 
 Or from GitHub:
 ```bash
-git clone https://github.com/benarcher2691/dotfiles.git ~/dotfiles
+git clone https://github.com/benarcher2691/dotfiles_arch_2026.git ~/dotfiles
 ```
 
 Then stow:
 ```bash
 cd ~/dotfiles
-stow bash git hypr waybar ghostty mako rofi scripts vim yazi wallpapers
+stow bash claude ghostty git hypr mako rofi scripts vim wallpapers waybar yazi
 ```
 
 ### Install yay + AUR packages
