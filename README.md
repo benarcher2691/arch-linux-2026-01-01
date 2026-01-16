@@ -25,6 +25,11 @@ Copy to USB:
 - `dotfiles/`
 - `pass-store/`
 
+If copying from macOS, clean up resource fork files:
+```bash
+dot_clean /Volumes/Ventoy/dotfiles
+```
+
 ## 2. Install Arch
 
 Boot USB -> Ventoy -> Arch ISO
@@ -61,6 +66,7 @@ mv ~/.bashrc ~/.bashrc.default
 From USB:
 ```bash
 cp -r /run/archusb/dotfiles ~/dotfiles
+find ~/dotfiles -name '._*' -delete   # Remove macOS resource forks
 ```
 
 Or from GitHub:
