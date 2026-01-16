@@ -31,9 +31,13 @@ Boot USB -> Ventoy -> Arch ISO
 
 ```bash
 mkdir -p /run/archusb
-mount /dev/disk/by-label/Ventoy /run/archusb
+udevadm trigger                       # Initialize Ventoy device mapper
+mount /dev/mapper/sda1 /run/archusb   # Use /dev/mapper/, not /dev/sda1
 /run/archusb/arch-install.sh
 ```
+
+> **Note:** Ventoy requires mounting via `/dev/mapper/sdX1`, not the raw block device.
+> If `/dev/mapper/sda1` doesn't exist, run `dmsetup ls` to find the correct device.
 
 ## 3. Post-Install (First Boot)
 
