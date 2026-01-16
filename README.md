@@ -43,6 +43,13 @@ mount /dev/mapper/sda1 /run/archusb   # Use /dev/mapper/, not /dev/sda1
 
 Login as user. DO NOT start Hyprland yet.
 
+### Mount USB (if using Ventoy stick)
+
+```bash
+sudo mkdir -p /run/archusb
+sudo mount /dev/sda1 /run/archusb   # Direct mount (not /dev/mapper)
+```
+
 ### Back up default .bashrc
 
 ```bash
@@ -51,8 +58,18 @@ mv ~/.bashrc ~/.bashrc.default
 
 ### Clone and stow dotfiles
 
+From USB:
 ```bash
-cp -r /run/archusb/dotfiles ~/dotfiles  # or git clone
+cp -r /run/archusb/dotfiles ~/dotfiles
+```
+
+Or from GitHub:
+```bash
+git clone https://github.com/benarcher2691/dotfiles.git ~/dotfiles
+```
+
+Then stow:
+```bash
 cd ~/dotfiles
 stow bash git hypr waybar ghostty mako rofi scripts vim yazi wallpapers
 ```
