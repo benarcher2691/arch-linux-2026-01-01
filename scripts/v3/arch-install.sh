@@ -507,12 +507,14 @@ if [[ -d "${PKG_CACHE}" ]] && mountpoint -q "${PKG_CACHE}"; then
     info "USB detected at ${PKG_CACHE}"
     read -p "Save package cache to USB for future installs? [y/N]: " save_cache
     if [[ "${save_cache}" =~ ^[Yy]$ ]]; then
-        info "Saving package cache (this may take a minute)..."
+        PKG_COUNT=$(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l)
+        info "Archiving ${PKG_COUNT} packages to USB (be patient, USB is slow)..."
         rm -f "${PKG_CACHE_TAR}"
-        tar cf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg .
+        tar cvf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg . 2>&1 | \
+            awk 'NR % 50 == 0 { printf "  %d files...\n", NR } END { printf "  %d files total\n", NR }'
+        info "Syncing to USB (may take 1-2 minutes)..."
         sync
-        PKG_COUNT=$(tar -tf "${PKG_CACHE_TAR}" 2>/dev/null | wc -l)
-        success "Saved ${PKG_COUNT} packages to ${PKG_CACHE_TAR}"
+        success "Package cache saved to ${PKG_CACHE_TAR}"
     fi
 fi
 
