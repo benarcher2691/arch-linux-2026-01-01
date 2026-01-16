@@ -264,6 +264,7 @@ pacman -S --noconfirm \
     snap-pac \
     snapper \
     stow \
+    terminus-font \
     ttf-font-awesome \
     ttf-jetbrains-mono-nerd \
     waybar \
