@@ -44,9 +44,20 @@ mount /dev/mapper/sda1 /run/archusb   # Use /dev/mapper/, not /dev/sda1
 > **Note:** Ventoy requires mounting via `/dev/mapper/sdX1`, not the raw block device.
 > If `/dev/mapper/sda1` doesn't exist, run `dmsetup ls` to find the correct device.
 
+When installation completes:
+- Do NOT remove USB - you need it for dotfiles in next step
+- Reboot and select HDD in boot menu (not USB)
+
 ## 3. Post-Install (First Boot)
 
 Login as user. DO NOT start Hyprland yet.
+
+### Connect to internet and update
+
+```bash
+nmtui                  # Connect to WiFi
+sudo pacman -Syu       # Update system
+```
 
 ### Mount USB (if using Ventoy stick)
 
@@ -91,6 +102,17 @@ cd ~ && rm -rf /tmp/yay-bin
 
 yay -S --noconfirm brave-bin blueman swww yazi
 ```
+
+### Install sdkman and nvm
+
+```bash
+curl -s "https://get.sdkman.io" | bash    # Java version manager
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash   # Node version manager
+```
+
+Restart shell, then install versions as needed:
+- `sdk install java` (list available: `sdk list java`)
+- `nvm install --lts` (list available: `nvm ls-remote`)
 
 ## 4. Start Hyprland
 
