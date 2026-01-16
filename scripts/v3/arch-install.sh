@@ -70,6 +70,14 @@ echo ""
 # Check internet connection
 ping -c 1 archlinux.org &>/dev/null || error "No internet connection"
 
+# Detect USB device for package cache (must be done BEFORE we mount /mnt)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+USB_DEVICE=""
+if [[ -f "${SCRIPT_DIR}/pkg-cache.tar" ]]; then
+    USB_DEVICE=$(df "${SCRIPT_DIR}" | tail -1 | awk '{print $1}')
+    info "Found package cache on ${USB_DEVICE}"
+fi
+
 warn "This will ERASE ALL DATA on ${DISK}!"
 read -p "Type 'YES' to continue: " confirm
 [[ "${confirm}" != "YES" ]] && error "Aborted by user"
@@ -161,26 +169,32 @@ success "Filesystems mounted"
 # BASE INSTALLATION
 # =============================================================================
 
-# Get script directory for finding pkg-cache.tar
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PKG_CACHE_TAR="${SCRIPT_DIR}/pkg-cache.tar"
-
-# Extract cached packages if available (speeds up installation)
+# Extract cached packages if USB device was detected earlier
 USE_CACHE=""
-if [[ -f "${PKG_CACHE_TAR}" ]]; then
-    info "Extracting cached packages..."
-    # Extract to target cache (for chroot pacman -S)
-    mkdir -p /mnt/var/cache/pacman/pkg
-    tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
-    # Symlink host cache to target cache (for pacstrap)
-    mkdir -p /var/cache/pacman
-    rm -rf /var/cache/pacman/pkg
-    ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
-    success "Package cache ready ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
-    USE_CACHE="-c"
-    sleep 5
+if [[ -n "${USB_DEVICE}" ]]; then
+    info "Re-mounting USB at /run/archusb..."
+    mkdir -p /run/archusb
+    mount "${USB_DEVICE}" /run/archusb
+    PKG_CACHE_TAR="/run/archusb/pkg-cache.tar"
+
+    if [[ -f "${PKG_CACHE_TAR}" ]]; then
+        info "Extracting cached packages..."
+        # Extract to target cache (for chroot pacman -S)
+        mkdir -p /mnt/var/cache/pacman/pkg
+        tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
+        # Symlink host cache to target cache (for pacstrap)
+        mkdir -p /var/cache/pacman
+        rm -rf /var/cache/pacman/pkg
+        ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
+        success "Package cache ready ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
+        USE_CACHE="-c"
+        sleep 5
+    else
+        warn "pkg-cache.tar not found after remount - will download packages"
+        sleep 5
+    fi
 else
-    warn "No package cache found at ${PKG_CACHE_TAR} - will download packages"
+    warn "No package cache detected - will download packages"
     sleep 5
 fi
 
