@@ -4,8 +4,9 @@
 # Features: LUKS encryption, btrfs, Plymouth, Hyprland, Waybar
 #
 # Usage: Run from Arch ISO live environment
-#   chmod +x arch-install.sh
-#   ./arch-install.sh
+#   mkdir -p /run/archusb
+#   mount /dev/sdX1 /run/archusb      # Optional: mount USB with pkg-cache.tar
+#   /run/archusb/arch-install.sh      # Or: bash /path/to/arch-install.sh
 #
 set -euo pipefail
 
@@ -70,20 +71,9 @@ echo ""
 # Check internet connection
 ping -c 1 archlinux.org &>/dev/null || error "No internet connection"
 
-# Detect USB device for package cache (must be done BEFORE we mount /mnt)
-# WARNING: If running from /mnt/*, the USB gets shadowed when we mount cryptroot.
-# Bash may fail to read rest of script. Mount USB at /run/archusb to avoid this.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-USB_DEVICE=""
-if [[ -f "${SCRIPT_DIR}/pkg-cache.tar" ]]; then
-    USB_DEVICE=$(df "${SCRIPT_DIR}" | tail -1 | awk '{print $1}')
-    info "Found package cache on ${USB_DEVICE}"
-    if [[ "${SCRIPT_DIR}" == /mnt/* ]]; then
-        warn "Script running from /mnt/* - this may cause issues!"
-        warn "Recommended: mount USB at /run/archusb and run from there"
-        sleep 3
-    fi
-fi
+# Package cache location (fixed path - user must mount USB here)
+PKG_CACHE="/run/archusb"
+PKG_CACHE_TAR="${PKG_CACHE}/pkg-cache.tar"
 
 warn "This will ERASE ALL DATA on ${DISK}!"
 read -p "Type 'YES' to continue: " confirm
@@ -176,40 +166,23 @@ success "Filesystems mounted"
 # BASE INSTALLATION
 # =============================================================================
 
-# Extract cached packages if USB device was detected earlier
+# Extract cached packages if available at fixed path
 USE_CACHE=""
-if [[ -n "${USB_DEVICE}" ]]; then
-    # If script was under /mnt/*, it's now shadowed - must remount device
-    # If script was elsewhere (e.g., /run/media), use original path
-    if [[ "${SCRIPT_DIR}" == /mnt/* ]]; then
-        info "Re-mounting USB at /run/archusb..."
-        mkdir -p /run/archusb
-        mount "${USB_DEVICE}" /run/archusb || { warn "Failed to mount USB"; USB_DEVICE=""; }
-        PKG_CACHE_TAR="/run/archusb/pkg-cache.tar"
-    else
-        # USB still accessible at original location
-        PKG_CACHE_TAR="${SCRIPT_DIR}/pkg-cache.tar"
-    fi
-
-    if [[ -f "${PKG_CACHE_TAR}" ]]; then
-        info "Extracting cached packages..."
-        # Extract to target cache (for chroot pacman -S)
-        mkdir -p /mnt/var/cache/pacman/pkg
-        tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
-        # Symlink host cache to target cache (for pacstrap)
-        mkdir -p /var/cache/pacman
-        rm -rf /var/cache/pacman/pkg
-        ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
-        success "Package cache ready ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
-        USE_CACHE="-c"
-        sleep 5
-    else
-        warn "pkg-cache.tar not found after remount - will download packages"
-        sleep 5
-    fi
+if [[ -f "${PKG_CACHE_TAR}" ]]; then
+    info "Extracting cached packages from ${PKG_CACHE_TAR}..."
+    # Extract to target cache (for chroot pacman -S)
+    mkdir -p /mnt/var/cache/pacman/pkg
+    tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
+    # Symlink host cache to target cache (for pacstrap)
+    mkdir -p /var/cache/pacman
+    rm -rf /var/cache/pacman/pkg
+    ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
+    PKG_COUNT=$(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l)
+    success "Package cache ready (${PKG_COUNT} packages)"
+    USE_CACHE="-c"
 else
-    warn "No package cache detected - will download packages"
-    sleep 5
+    warn "No cache at ${PKG_CACHE_TAR} - will download packages"
+    info "To use cache: mount USB to /run/archusb with pkg-cache.tar"
 fi
 
 info "Installing base system..."
