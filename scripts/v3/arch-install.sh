@@ -161,18 +161,18 @@ success "Filesystems mounted"
 # BASE INSTALLATION
 # =============================================================================
 
-# Get script directory for finding pkg-cache
+# Get script directory for finding pkg-cache.tar
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PKG_CACHE="${SCRIPT_DIR}/pkg-cache"
+PKG_CACHE_TAR="${SCRIPT_DIR}/pkg-cache.tar"
 
-# Copy cached packages if available (speeds up installation)
-if [[ -d "${PKG_CACHE}" ]] && [[ -n "$(ls -A "${PKG_CACHE}" 2>/dev/null)" ]]; then
-    info "Copying cached packages from USB..."
+# Extract cached packages if available (speeds up installation)
+if [[ -f "${PKG_CACHE_TAR}" ]]; then
+    info "Extracting cached packages from USB..."
     mkdir -p /mnt/var/cache/pacman/pkg
-    cp "${PKG_CACHE}"/*.pkg.tar.zst /mnt/var/cache/pacman/pkg/ 2>/dev/null || true
-    success "Package cache copied ($(ls "${PKG_CACHE}"/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
+    tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
+    success "Package cache extracted ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
 else
-    warn "No package cache found at ${PKG_CACHE} - will download packages"
+    warn "No package cache found at ${PKG_CACHE_TAR} - will download packages"
 fi
 
 info "Installing base system..."
