@@ -166,17 +166,19 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG_CACHE_TAR="${SCRIPT_DIR}/pkg-cache.tar"
 
 # Extract cached packages if available (speeds up installation)
+USE_CACHE=""
 if [[ -f "${PKG_CACHE_TAR}" ]]; then
-    info "Extracting cached packages from USB..."
-    mkdir -p /mnt/var/cache/pacman/pkg
-    tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
-    success "Package cache extracted ($(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
+    info "Extracting cached packages to host cache..."
+    mkdir -p /var/cache/pacman/pkg
+    tar xf "${PKG_CACHE_TAR}" -C /var/cache/pacman/pkg/
+    success "Package cache extracted ($(ls /var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l) packages)"
+    USE_CACHE="-c"
 else
     warn "No package cache found at ${PKG_CACHE_TAR} - will download packages"
 fi
 
 info "Installing base system..."
-pacstrap -K /mnt \
+pacstrap -K ${USE_CACHE} /mnt \
     base \
     base-devel \
     btrfs-progs \
