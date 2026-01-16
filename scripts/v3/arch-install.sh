@@ -499,6 +499,24 @@ arch-chroot /mnt passwd ${USERNAME}
 success "System configuration complete"
 
 # =============================================================================
+# SAVE PACKAGE CACHE (optional)
+# =============================================================================
+
+if [[ -d "${PKG_CACHE}" ]] && mountpoint -q "${PKG_CACHE}"; then
+    echo ""
+    info "USB detected at ${PKG_CACHE}"
+    read -p "Save package cache to USB for future installs? [y/N]: " save_cache
+    if [[ "${save_cache}" =~ ^[Yy]$ ]]; then
+        info "Saving package cache (this may take a minute)..."
+        rm -f "${PKG_CACHE_TAR}"
+        tar cf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg .
+        sync
+        PKG_COUNT=$(tar -tf "${PKG_CACHE_TAR}" 2>/dev/null | wc -l)
+        success "Saved ${PKG_COUNT} packages to ${PKG_CACHE_TAR}"
+    fi
+fi
+
+# =============================================================================
 # CLEANUP
 # =============================================================================
 
