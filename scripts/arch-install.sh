@@ -267,6 +267,8 @@ pacman -S --noconfirm \
     dosfstools \
     efibootmgr \
     exfatprogs \
+    fd \
+    fzf \
     ghostty \
     gnupg \
     grim \
@@ -274,6 +276,7 @@ pacman -S --noconfirm \
     kitty \
     mako \
     noto-fonts \
+    network-manager-applet \
     noto-fonts-emoji \
     openssh \
     pipewire \
@@ -284,11 +287,14 @@ pacman -S --noconfirm \
     polkit-kde-agent \
     qt5-wayland \
     qt6-wayland \
+    ripgrep \
+    rofi \
     slurp \
     snap-pac \
     snapper \
     stow \
     terminus-font \
+    thunar \
     ttf-font-awesome \
     ttf-jetbrains-mono-nerd \
     waybar \

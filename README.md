@@ -89,7 +89,7 @@ cd yay-bin
 makepkg -si --noconfirm
 cd ~ && rm -rf /tmp/yay-bin
 
-yay -S --noconfirm brave-bin blueman
+yay -S --noconfirm brave-bin blueman swww yazi
 ```
 
 ## 4. Start Hyprland
