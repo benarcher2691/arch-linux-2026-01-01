@@ -134,3 +134,18 @@ sudo pacman -S vlc vlc-plugin-ffmpeg vlc-plugin-mpeg2
 sudo pacman -S transmission-gtk
 xdg-mime default transmission-gtk.desktop x-scheme-handler/magnet
 ```
+
+### VPN
+
+```bash
+yay -S mullvad-vpn
+sudo systemctl enable --now mullvad-daemon
+mullvad account login <account-number>
+mullvad connect
+```
+
+### File sharing
+
+```bash
+yay -S localsend-bin
+```
