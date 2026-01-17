@@ -177,3 +177,9 @@ mullvad connect
 ```bash
 yay -S localsend-bin
 ```
+
+### Claude Code CLI
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
