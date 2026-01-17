@@ -113,6 +113,12 @@ From macOS:
 ssh-copy-id ben@<arch-ip>
 ```
 
+### Copy password store (from USB)
+
+```bash
+cp -r /run/archusb/pass-store ~/.password-store
+```
+
 ### Install yay + AUR packages
 
 ```bash
