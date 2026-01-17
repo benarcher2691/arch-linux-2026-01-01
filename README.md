@@ -128,7 +128,7 @@ cd yay-bin
 makepkg -si --noconfirm
 cd ~ && rm -rf /tmp/yay-bin
 
-yay -S --noconfirm brave-bin blueman swww yazi
+yay -S --noconfirm brave-bin blueman lazydocker obsidian spotify-launcher swww yazi
 ```
 
 ### Install sdkman and nvm
