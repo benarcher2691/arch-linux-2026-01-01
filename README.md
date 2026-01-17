@@ -181,5 +181,22 @@ yay -S localsend-bin
 ### Claude Code CLI
 
 ```bash
-yay -S claude-code
+yay -S claude-code-bin
 ```
+
+### fzf integration with bash
+
+If you installed fzf, enable bash integration for enhanced history search:
+
+```bash
+# Add to ~/.bashrc
+[ -f /usr/share/fzf/key-bindings.bash ] && source /usr/share/fzf/key-bindings.bash
+[ -f /usr/share/fzf/completion.bash ] && source /usr/share/fzf/completion.bash
+```
+
+Then reload: `source ~/.bashrc`
+
+Key bindings:
+- **Ctrl+R**: Interactive command history search
+- **Ctrl+T**: File/directory finder
+- **Alt+C**: Quick directory navigation
