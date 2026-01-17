@@ -262,6 +262,7 @@ pacman -S --noconfirm \
     bluez \
     bluez-utils \
     brightnessctl \
+    btop \
     cups \
     cups-pdf \
     dosfstools \
@@ -272,6 +273,7 @@ pacman -S --noconfirm \
     ghostty \
     gnupg \
     grim \
+    htop \
     hyprland \
     kitty \
     mako \
@@ -452,6 +454,13 @@ EOF
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 
+# Configure swap (4GB, btrfs-safe with COW disabled)
+truncate -s 0 /swapfile
+chattr +C /swapfile
+dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
+chmod 600 /swapfile
+mkswap /swapfile
+echo '/swapfile none swap defaults 0 0' >> /etc/fstab
 
 # Final verification
 echo ""
