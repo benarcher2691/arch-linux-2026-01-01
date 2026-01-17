@@ -288,7 +288,6 @@ pacman -S --noconfirm \
     qt5-wayland \
     qt6-wayland \
     ripgrep \
-    rofi \
     slurp \
     snap-pac \
     snapper \

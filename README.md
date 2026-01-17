@@ -88,7 +88,7 @@ git clone https://github.com/benarcher2691/dotfiles_arch_2026.git ~/dotfiles
 Then stow:
 ```bash
 cd ~/dotfiles
-stow bash claude ghostty git hypr mako rofi scripts vim wallpapers waybar yazi
+stow bash claude ghostty git hypr mako scripts vim wallpapers waybar yazi
 ```
 
 ### Install yay + AUR packages
