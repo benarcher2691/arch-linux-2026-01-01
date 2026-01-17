@@ -119,3 +119,18 @@ Restart shell, then install versions as needed:
 ```bash
 start-hyprland
 ```
+
+## 5. Additional Software
+
+### Media player
+
+```bash
+sudo pacman -S vlc vlc-plugin-ffmpeg vlc-plugin-mpeg2
+```
+
+### Torrent client
+
+```bash
+sudo pacman -S transmission-gtk
+xdg-mime default transmission-gtk.desktop x-scheme-handler/magnet
+```
