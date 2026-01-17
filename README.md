@@ -24,16 +24,6 @@ Copy to USB:
 - `arch-install.sh`
 - `dotfiles/`
 - `pass-store/`
-- `gpg-export/`
-
-### Export GPG keys (macOS)
-
-```bash
-mkdir -p /Volumes/Ventoy/gpg-export
-gpg --export-secret-keys --armor > /Volumes/Ventoy/gpg-export/secret-keys.asc
-gpg --export --armor > /Volumes/Ventoy/gpg-export/public-keys.asc
-gpg --export-ownertrust > /Volumes/Ventoy/gpg-export/trustdb.txt
-```
 
 If copying from macOS, clean up resource fork files:
 ```bash
@@ -101,12 +91,26 @@ cd ~/dotfiles
 stow bash claude ghostty git hypr mako scripts vim wallpapers waybar yazi
 ```
 
-### Import GPG keys
+### Transfer GPG keys (via LocalSend)
 
+On macOS, export:
 ```bash
-gpg --import /run/archusb/gpg-export/secret-keys.asc
-gpg --import /run/archusb/gpg-export/public-keys.asc
-gpg --import-ownertrust /run/archusb/gpg-export/trustdb.txt
+gpg --export-secret-keys --armor > ~/Desktop/gpg-secret.asc
+gpg --export-ownertrust > ~/Desktop/gpg-trust.txt
+```
+
+Send via LocalSend to Arch, then import:
+```bash
+gpg --import ~/Downloads/gpg-secret.asc
+gpg --import-ownertrust ~/Downloads/gpg-trust.txt
+rm ~/Downloads/gpg-secret.asc ~/Downloads/gpg-trust.txt
+```
+
+### Transfer SSH public key
+
+From macOS:
+```bash
+ssh-copy-id ben@<arch-ip>
 ```
 
 ### Install yay + AUR packages
