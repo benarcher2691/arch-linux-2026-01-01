@@ -138,7 +138,7 @@ xdg-mime default transmission-gtk.desktop x-scheme-handler/magnet
 ### VPN
 
 ```bash
-yay -S mullvad-vpn
+yay -S mullvad-vpn-bin   # Use -bin to avoid heavy Rust compilation
 sudo systemctl enable --now mullvad-daemon
 mullvad account login <account-number>
 mullvad connect
