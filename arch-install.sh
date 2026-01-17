@@ -271,6 +271,7 @@ pacman -S --noconfirm \
     fd \
     fzf \
     ghostty \
+    github-cli \
     gnupg \
     grim \
     htop \

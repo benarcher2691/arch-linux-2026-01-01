@@ -181,5 +181,5 @@ yay -S localsend-bin
 ### Claude Code CLI
 
 ```bash
-npm install -g @anthropic-ai/claude-code
+yay -S claude-code
 ```
