@@ -200,3 +200,20 @@ Key bindings:
 - **Ctrl+R**: Interactive command history search
 - **Ctrl+T**: File/directory finder
 - **Alt+C**: Quick directory navigation
+
+### ThinkPad F10/F11/F12 media controls
+
+F10 is mapped to `XF86Bluetooth` by default, which toggles Bluetooth at the kernel level (rfkill). To use F10-F12 as media keys with `playerctl`:
+
+1. Copy the hwdb file from dotfiles:
+```bash
+sudo cp ~/dotfiles/hypr/etc/udev/hwdb.d/99-thinkpad-f10.hwdb /etc/udev/hwdb.d/
+sudo systemd-hwdb update && sudo udevadm trigger
+```
+
+2. The Hyprland config already has the bindings:
+   - **F10**: Previous track
+   - **F11**: Play/Pause
+   - **F12**: Next track
+
+To find keysyms for other keys, use `wev` or `sudo evtest`.
