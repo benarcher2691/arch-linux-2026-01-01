@@ -282,6 +282,7 @@ pacman -S --noconfirm \
     network-manager-applet \
     noto-fonts-emoji \
     openssh \
+    pandoc \
     pass \
     pipewire \
     pipewire-alsa \
