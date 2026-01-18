@@ -277,6 +277,7 @@ pacman -S --noconfirm \
     htop \
     hyprland \
     kitty \
+    lynis \
     mako \
     noto-fonts \
     network-manager-applet \
@@ -301,6 +302,7 @@ pacman -S --noconfirm \
     thunar \
     ttf-font-awesome \
     ttf-jetbrains-mono-nerd \
+    ufw \
     waybar \
     wireplumber \
     wl-clipboard \
@@ -405,6 +407,7 @@ EOF
 # Enable services
 systemctl enable NetworkManager
 systemctl enable systemd-boot-update
+systemctl enable systemd-timesyncd
 systemctl enable sshd
 systemctl enable bluetooth
 systemctl enable cups

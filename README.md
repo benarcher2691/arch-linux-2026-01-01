@@ -134,7 +134,7 @@ cd yay-bin
 makepkg -si --noconfirm
 cd ~ && rm -rf /tmp/yay-bin
 
-yay -S --noconfirm brave-bin blueman lazydocker obsidian spotify-launcher swww yazi
+yay -S --noconfirm arch-audit brave-bin blueman lazydocker obsidian rkhunter spotify-launcher swww yazi
 ```
 
 ### Install sdkman and nvm
@@ -223,3 +223,67 @@ sudo systemd-hwdb update && sudo udevadm trigger
    - **F12**: Next track
 
 To find keysyms for other keys, use `wev` or `sudo evtest`.
+
+## 6. Security Hardening
+
+Based on Lynis audit recommendations.
+
+### Enable firewall
+
+```bash
+sudo systemctl enable --now ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw enable
+```
+
+### Enable time sync
+
+```bash
+sudo systemctl enable --now systemd-timesyncd
+```
+
+### SSH hardening
+
+Edit `/etc/ssh/sshd_config`:
+```bash
+AllowTcpForwarding no
+ClientAliveCountMax 2
+LogLevel VERBOSE
+MaxAuthTries 3
+MaxSessions 2
+TCPKeepAlive no
+AllowAgentForwarding no
+```
+
+Then restart: `sudo systemctl restart sshd`
+
+### Kernel hardening
+
+Create `/etc/sysctl.d/99-security.conf`:
+```bash
+sudo tee /etc/sysctl.d/99-security.conf << 'EOF'
+# Disable ICMP redirects
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+net.ipv4.conf.all.send_redirects = 0
+
+# Log martian packets
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.conf.default.log_martians = 1
+
+# Restrict kernel pointer access
+kernel.kptr_restrict = 2
+EOF
+
+sudo sysctl --system
+```
+
+### Security tools
+
+Already installed via yay in section 3.
+
+Run vulnerability scan: `arch-audit`
+Run rootkit scan: `sudo rkhunter --check`
