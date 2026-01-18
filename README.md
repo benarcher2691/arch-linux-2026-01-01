@@ -91,6 +91,12 @@ cd ~/dotfiles
 stow bash claude ghostty git hypr mako scripts vim wallpapers waybar yazi
 ```
 
+### Clone second-brain
+
+```bash
+git clone https://github.com/benarcher2691/second-brain.git ~/second-brain
+```
+
 ### Transfer GPG keys (via LocalSend)
 
 On macOS, export:
