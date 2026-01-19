@@ -66,10 +66,11 @@ sudo mkdir -p /run/archusb
 sudo mount /dev/sda1 /run/archusb   # Direct mount (not /dev/mapper)
 ```
 
-### Back up default .bashrc
+### Back up default bash files
 
 ```bash
 mv ~/.bashrc ~/.bashrc.default
+mv ~/.bash_profile ~/.bash_profile.default
 ```
 
 ### Clone and stow dotfiles
@@ -88,7 +89,7 @@ git clone https://github.com/benarcher2691/dotfiles_arch_2026.git ~/dotfiles
 Then stow:
 ```bash
 cd ~/dotfiles
-stow bash claude ghostty git hypr mako scripts vim wallpapers waybar yazi
+stow bash ghostty git hypr mako nvim vim waybar yazi
 ```
 
 ### Install LocalSend (for file transfer)
