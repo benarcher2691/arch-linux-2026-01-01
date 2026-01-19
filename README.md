@@ -245,8 +245,9 @@ sudo systemctl enable --now systemd-timesyncd
 
 ### SSH hardening
 
-Edit `/etc/ssh/sshd_config`:
+Create `/etc/ssh/sshd_config.d/50-hardening.conf`:
 ```bash
+sudo tee /etc/ssh/sshd_config.d/50-hardening.conf << 'EOF'
 AllowTcpForwarding no
 ClientAliveCountMax 2
 LogLevel VERBOSE
@@ -254,9 +255,10 @@ MaxAuthTries 3
 MaxSessions 2
 TCPKeepAlive no
 AllowAgentForwarding no
-```
+EOF
 
-Then restart: `sudo systemctl restart sshd`
+sudo systemctl restart sshd
+```
 
 ### Kernel hardening
 
@@ -276,6 +278,25 @@ net.ipv4.conf.default.log_martians = 1
 
 # Restrict kernel pointer access
 kernel.kptr_restrict = 2
+
+# Disable TTY line discipline autoload
+dev.tty.ldisc_autoload = 0
+
+# Protect FIFOs and regular files in world-writable directories
+fs.protected_fifos = 2
+fs.protected_regular = 2
+
+# Disable core dumps for setuid programs
+fs.suid_dumpable = 0
+
+# Disable Magic SysRq key
+kernel.sysrq = 0
+
+# Disable unprivileged BPF
+kernel.unprivileged_bpf_disabled = 1
+
+# Harden BPF JIT compiler
+net.core.bpf_jit_harden = 2
 EOF
 
 sudo sysctl --system
