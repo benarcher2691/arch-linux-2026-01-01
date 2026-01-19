@@ -91,10 +91,10 @@ cd ~/dotfiles
 stow bash claude ghostty git hypr mako scripts vim wallpapers waybar yazi
 ```
 
-### Clone second-brain
+### Install LocalSend (for file transfer)
 
 ```bash
-git clone https://github.com/benarcher2691/second-brain.git ~/second-brain
+yay -S localsend-bin
 ```
 
 ### Transfer GPG keys (via LocalSend)
@@ -117,6 +117,12 @@ rm ~/Downloads/gpg-secret.asc ~/Downloads/gpg-trust.txt
 From macOS:
 ```bash
 ssh-copy-id ben@<arch-ip>
+```
+
+### Clone second-brain
+
+```bash
+git clone git@github.com:benarcher2691/second-brain.git ~/second-brain
 ```
 
 ### Copy password store (from USB)
@@ -181,12 +187,6 @@ mullvad account login <account-number>
 mullvad connect
 ```
 
-### File sharing
-
-```bash
-yay -S localsend-bin
-```
-
 ### Claude Code CLI
 
 ```bash
@@ -200,7 +200,7 @@ yay -S claude-code-bin
 sudo pacman -S docker
 sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
-# Log out/in for group change to take effect
+newgrp docker   # Activate group in current shell (or log out/in)
 
 # Install DevPod (containerized dev environments)
 yay -S devpod-bin
@@ -334,3 +334,12 @@ Already installed via yay in section 3.
 
 Run vulnerability scan: `arch-audit`
 Run rootkit scan: `sudo rkhunter --check`
+
+### Lynis security audit
+
+```bash
+sudo pacman -S lynis
+sudo lynis audit system
+```
+
+Review the output for warnings and suggestions. Copy the results to Claude Code for analysis and recommendations.
