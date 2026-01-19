@@ -92,10 +92,23 @@ cd ~/dotfiles
 stow bash ghostty git hypr mako nvim vim waybar yazi
 ```
 
+### Install yay (AUR helper)
+
+```bash
+cd /tmp
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin
+makepkg -si --noconfirm
+cd ~ && rm -rf /tmp/yay-bin
+
+# Disable interactive prompts
+yay -Y --diffmenu=false --editmenu=false --cleanmenu=false --removemake=yes --provides=false --combinedupgrade=false --save
+```
+
 ### Install LocalSend (for file transfer)
 
 ```bash
-yay -S localsend-bin
+yay -S --noconfirm localsend-bin
 ```
 
 ### Transfer GPG keys (via LocalSend)
@@ -132,19 +145,10 @@ git clone git@github.com:benarcher2691/second-brain.git ~/second-brain
 cp -r /run/archusb/pass-store ~/.password-store
 ```
 
-### Install yay + AUR packages
+### Install AUR packages
 
 ```bash
-cd /tmp
-git clone https://aur.archlinux.org/yay-bin.git
-cd yay-bin
-makepkg -si --noconfirm
-cd ~ && rm -rf /tmp/yay-bin
-
 yay -S --noconfirm arch-audit brave-bin blueman lazydocker obsidian rkhunter spotify-launcher swww yazi
-
-# Disable interactive prompts
-yay -Y --diffmenu=false --editmenu=false --cleanmenu=false --removemake=yes --provides=false --combinedupgrade=false --save
 ```
 
 ### Install sdkman and nvm
