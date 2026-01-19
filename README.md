@@ -193,6 +193,29 @@ yay -S localsend-bin
 yay -S claude-code-bin
 ```
 
+### Docker and DevPod
+
+```bash
+# Install Docker
+sudo pacman -S docker
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+# Log out/in for group change to take effect
+
+# Install DevPod (containerized dev environments)
+yay -S devpod-bin
+echo 'alias devpod="devpod-cli"' >> ~/.bashrc
+source ~/.bashrc
+
+# Set up Docker provider and disable IDE (use SSH instead)
+devpod provider add docker
+devpod ide use none
+
+# Usage: start a dev environment and SSH into it
+devpod up <repo-or-path>
+devpod ssh <workspace-name>
+```
+
 ### fzf integration with bash
 
 If you installed fzf, enable bash integration for enhanced history search:
