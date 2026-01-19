@@ -136,8 +136,8 @@ cd ~ && rm -rf /tmp/yay-bin
 
 yay -S --noconfirm arch-audit brave-bin blueman lazydocker obsidian rkhunter spotify-launcher swww yazi
 
-# Disable interactive prompts for diffs/menus
-yay -Y --diffmenu=false --editmenu=false --cleanmenu=false --save
+# Disable interactive prompts
+yay -Y --diffmenu=false --editmenu=false --cleanmenu=false --removemake=yes --provides=false --combinedupgrade=false --save
 ```
 
 ### Install sdkman and nvm
