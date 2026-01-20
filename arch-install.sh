@@ -277,6 +277,7 @@ pacman -S --noconfirm \
     htop \
     hyprland \
     kitty \
+    libreoffice-fresh \
     lynis \
     mako \
     noto-fonts \
