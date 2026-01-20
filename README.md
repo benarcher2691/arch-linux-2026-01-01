@@ -192,6 +192,8 @@ mullvad account login <account-number>
 mullvad connect
 ```
 
+> **Warning:** Mullvad's "early boot network blocker" can block ALL network traffic (including LAN) when the daemon starts but you're not connected to VPN. If networking stops after a Mullvad update, either connect to VPN or run `mullvad lockdown-mode set off`.
+
 ### Claude Code CLI
 
 ```bash
@@ -237,6 +239,34 @@ Key bindings:
 - **Ctrl+R**: Interactive command history search
 - **Ctrl+T**: File/directory finder
 - **Alt+C**: Quick directory navigation
+
+### Alacritty vi mode
+
+Alacritty has a built-in vi mode for navigating and copying terminal output without a mouse.
+
+**Enter vi mode:** `Ctrl+Shift+Space`
+
+**Navigation:**
+- `h/j/k/l`: Move cursor left/down/up/right
+- `w/b`: Jump forward/backward by word
+- `0/$`: Jump to start/end of line
+- `g/G`: Jump to top/bottom of scrollback
+- `Ctrl+u/Ctrl+d`: Page up/down
+
+**Selection:**
+- `v`: Start character selection
+- `V`: Start line selection
+- `Ctrl+v`: Start block selection
+
+**Search:**
+- `/`: Search forward
+- `?`: Search backward
+- `n/N`: Next/previous match
+
+**Copy:**
+- `y`: Yank (copy) selection to clipboard
+
+**Exit vi mode:** `Escape` or `Enter`
 
 ### ThinkPad F10/F11/F12 media controls
 
