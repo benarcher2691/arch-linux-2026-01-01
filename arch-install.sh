@@ -259,6 +259,7 @@ EOF
 
 # Install additional packages
 pacman -S --noconfirm \
+    alacritty \
     bluez \
     bluez-utils \
     brightnessctl \
@@ -270,7 +271,6 @@ pacman -S --noconfirm \
     exfatprogs \
     fd \
     fzf \
-    ghostty \
     github-cli \
     gnupg \
     grim \
@@ -536,7 +536,7 @@ echo "  5. Stow dotfiles and install AUR packages (see README)"
 echo -e "  6. Start Hyprland: ${YELLOW}start-hyprland${NC}"
 echo ""
 echo -e "${BLUE}Key bindings (in Hyprland):${NC}"
-echo "  SUPER + Enter     - Terminal (kitty)"
+echo "  SUPER + Enter     - Terminal (alacritty)"
 echo "  SUPER + D         - Application launcher (wofi)"
 echo "  SUPER + Q         - Close window"
 echo "  SUPER + 1-0       - Switch workspace"
