@@ -283,6 +283,7 @@ pacman -S --noconfirm \
     noto-fonts \
     network-manager-applet \
     noto-fonts-emoji \
+    neovim \
     openssh \
     pandoc \
     pass \
