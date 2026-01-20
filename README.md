@@ -195,7 +195,7 @@ mullvad connect
 ### Claude Code CLI
 
 ```bash
-yay -S claude-code-bin
+yay -S claude-code
 ```
 
 ### Docker and DevPod
