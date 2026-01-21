@@ -302,6 +302,7 @@ pacman -S --noconfirm \
     polkit-kde-agent \
     qt5-wayland \
     qt6-wayland \
+    rclone \
     ripgrep \
     slurp \
     snap-pac \
