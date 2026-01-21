@@ -293,6 +293,7 @@ pacman -S --noconfirm \
     neovim \
     openssh \
     pandoc \
+    parted \
     pass \
     pipewire \
     pipewire-alsa \
@@ -305,6 +306,7 @@ pacman -S --noconfirm \
     rclone \
     ripgrep \
     slurp \
+    smartmontools \
     snap-pac \
     snapper \
     stow \
