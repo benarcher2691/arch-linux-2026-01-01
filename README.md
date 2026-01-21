@@ -472,3 +472,97 @@ github-restore                       # List available backups
 ```
 
 Clones from local backup and sets remote to GitHub. When online, `git push` goes to GitHub. Idempotent - safe to run on existing repos.
+
+## 9. Encrypted Cloud Backup (rclone)
+
+Sync Google Drive to an external USB drive with on-the-fly encryption using rclone.
+
+### One-time setup
+
+#### 1. Configure Google Drive remote
+
+```bash
+rclone config
+```
+
+- `n` - New remote
+- Name: `gdrive`
+- Storage: `drive` (Google Drive)
+- Leave client_id and client_secret blank (use rclone's)
+- Scope: `1` (full access)
+- Leave root_folder_id and service_account_file blank
+- `n` - No advanced config
+- `y` - Auto config (opens browser for OAuth)
+- `n` - Not a shared drive
+- `y` - Confirm
+
+#### 2. Configure encrypted remote
+
+```bash
+rclone config
+```
+
+- `n` - New remote
+- Name: `wd-crypt`
+- Storage: `crypt` (Encrypt/Decrypt a remote)
+- Remote: `/mnt/wd/gdrive-backup` (path where encrypted files are stored)
+- Filename encryption: `standard`
+- Directory name encryption: `1` (encrypt)
+- `y` - Enter password
+- Enter a strong password (save this in your password store!)
+- `y` - Confirm password
+- `n` - No password2
+- `y` - Confirm
+
+#### 3. Save the encryption password
+
+```bash
+pass insert backup/wd-crypt
+```
+
+Without this password and the rclone config, the backup cannot be decrypted.
+
+### Mount USB drive
+
+```bash
+sudo mount --mkdir /dev/sdb1 /mnt/wd
+sudo chown $USER:$USER /mnt/wd
+```
+
+> **Note:** For ext4 filesystems, use `chown` after mounting. The `uid`/`gid` mount options only work with FAT/exFAT/NTFS.
+
+### Sync Google Drive to encrypted backup
+
+```bash
+rclone sync gdrive: wd-crypt: --progress
+```
+
+This compares source and destination, then transfers only new/changed files. Files are encrypted as they're written to the USB drive.
+
+Options:
+- `--dry-run` - Preview changes without writing
+- `--progress` - Show transfer progress
+- `--exclude "*.tmp"` - Skip certain files
+
+### Restore from backup
+
+```bash
+# List files (decrypted view)
+rclone ls wd-crypt:
+
+# Restore single file
+rclone copy wd-crypt:Documents/file.pdf ~/Downloads/
+
+# Restore entire backup
+rclone copy wd-crypt: ~/restored-gdrive/
+```
+
+### Backup the rclone config
+
+The config file at `~/.config/rclone/rclone.conf` contains your encryption password (obfuscated). Back it up:
+
+```bash
+pass insert -m backup/rclone-config < ~/.config/rclone/rclone.conf
+```
+
+Or copy to a secure location on another device.
