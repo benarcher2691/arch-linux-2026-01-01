@@ -307,6 +307,10 @@ pacman -S --noconfirm \
     stow \
     terminus-font \
     tesseract-data-eng \
+    texlive-basic \
+    texlive-fontsrecommended \
+    texlive-latex \
+    texlive-latexrecommended \
     thunar \
     ttf-font-awesome \
     ttf-jetbrains-mono-nerd \
