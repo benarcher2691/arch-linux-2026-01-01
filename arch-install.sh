@@ -310,6 +310,7 @@ pacman -S --noconfirm \
     texlive-basic \
     texlive-fontsrecommended \
     texlive-latex \
+    texlive-latexextra \
     texlive-latexrecommended \
     thunar \
     ttf-font-awesome \
