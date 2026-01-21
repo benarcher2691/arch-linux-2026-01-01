@@ -276,6 +276,7 @@ pacman -S --noconfirm \
     fd \
     fzf \
     github-cli \
+    glow \
     gnupg \
     grim \
     htop \
@@ -305,6 +306,7 @@ pacman -S --noconfirm \
     snapper \
     stow \
     terminus-font \
+    tesseract-data-eng \
     thunar \
     ttf-font-awesome \
     ttf-jetbrains-mono-nerd \
@@ -315,7 +317,9 @@ pacman -S --noconfirm \
     wofi \
     xdg-desktop-portal-gtk \
     xdg-desktop-portal-hyprland \
-    xdg-user-dirs
+    xdg-user-dirs \
+    zathura \
+    zathura-pdf-mupdf
 
 # mkinitcpio configuration for LUKS
 cat > /etc/mkinitcpio.conf << EOF
