@@ -40,7 +40,10 @@ NC='\033[0m'
 info() { echo -e "${BLUE}[INFO]${NC} $1"; }
 success() { echo -e "${GREEN}[OK]${NC} $1"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
-error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
+error() {
+  echo -e "${RED}[ERROR]${NC} $1"
+  exit 1
+}
 
 # =============================================================================
 # PRE-FLIGHT CHECKS
@@ -48,8 +51,8 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 echo -e "${BLUE}"
 echo "╔═══════════════════════════════════════════════════════════════════╗"
-echo "║         Arch Linux Installation Script - Lenovo T480s            ║"
-echo "║         LUKS + btrfs + Plymouth + Hyprland + Waybar              ║"
+echo "║         Arch Linux Installation Script - Lenovo T480s             ║"
+echo "║         LUKS + btrfs + Plymouth + Hyprland + Waybar               ║"
 echo "╚═══════════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -89,9 +92,9 @@ sgdisk --zap-all "${DISK}"
 
 info "Creating partitions..."
 sgdisk --clear \
-    --new=1:0:+${EFI_SIZE} --typecode=1:ef00 --change-name=1:EFI \
-    --new=2:0:0 --typecode=2:8309 --change-name=2:cryptroot \
-    "${DISK}"
+  --new=1:0:+${EFI_SIZE} --typecode=1:ef00 --change-name=1:EFI \
+  --new=2:0:0 --typecode=2:8309 --change-name=2:cryptroot \
+  "${DISK}"
 
 partprobe "${DISK}"
 sleep 2
@@ -113,12 +116,12 @@ echo -e "${YELLOW}Choose a strong passphrase and remember it!${NC}"
 echo ""
 
 cryptsetup luksFormat --type luks2 \
-    --cipher aes-xts-plain64 \
-    --key-size 512 \
-    --hash sha512 \
-    --pbkdf argon2id \
-    --label cryptroot \
-    "${CRYPT_PART}"
+  --cipher aes-xts-plain64 \
+  --key-size 512 \
+  --hash sha512 \
+  --pbkdf argon2id \
+  --label cryptroot \
+  "${CRYPT_PART}"
 
 info "Opening LUKS container..."
 cryptsetup open "${CRYPT_PART}" cryptroot
@@ -169,40 +172,40 @@ success "Filesystems mounted"
 # Extract cached packages if available at fixed path
 USE_CACHE=""
 if [[ -f "${PKG_CACHE_TAR}" ]]; then
-    info "Extracting cached packages from ${PKG_CACHE_TAR}..."
-    # Extract to target cache (for chroot pacman -S)
-    mkdir -p /mnt/var/cache/pacman/pkg
-    tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
-    # Symlink host cache to target cache (for pacstrap)
-    mkdir -p /var/cache/pacman
-    rm -rf /var/cache/pacman/pkg
-    ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
-    PKG_COUNT=$(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l)
-    success "Package cache ready (${PKG_COUNT} packages)"
-    USE_CACHE="-c"
+  info "Extracting cached packages from ${PKG_CACHE_TAR}..."
+  # Extract to target cache (for chroot pacman -S)
+  mkdir -p /mnt/var/cache/pacman/pkg
+  tar xf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg/
+  # Symlink host cache to target cache (for pacstrap)
+  mkdir -p /var/cache/pacman
+  rm -rf /var/cache/pacman/pkg
+  ln -s /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg
+  PKG_COUNT=$(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l)
+  success "Package cache ready (${PKG_COUNT} packages)"
+  USE_CACHE="-c"
 else
-    warn "No cache at ${PKG_CACHE_TAR} - will download packages"
-    info "To use cache: mount USB to /run/archusb with pkg-cache.tar"
+  warn "No cache at ${PKG_CACHE_TAR} - will download packages"
+  info "To use cache: mount USB to /run/archusb with pkg-cache.tar"
 fi
 
 info "Installing base system..."
 pacstrap -K ${USE_CACHE} /mnt \
-    base \
-    base-devel \
-    btrfs-progs \
-    git \
-    intel-ucode \
-    linux \
-    linux-firmware \
-    linux-headers \
-    linux-lts \
-    linux-lts-headers \
-    man-db \
-    man-pages \
-    nano \
-    networkmanager \
-    sudo \
-    vim
+  base \
+  base-devel \
+  btrfs-progs \
+  git \
+  intel-ucode \
+  linux \
+  linux-firmware \
+  linux-headers \
+  linux-lts \
+  linux-lts-headers \
+  man-db \
+  man-pages \
+  nano \
+  networkmanager \
+  sudo \
+  vim
 
 success "Base system installed"
 
@@ -211,7 +214,7 @@ success "Base system installed"
 # =============================================================================
 
 info "Generating fstab..."
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >>/mnt/etc/fstab
 success "fstab generated"
 
 # =============================================================================
@@ -224,7 +227,7 @@ info "Configuring system in chroot..."
 LUKS_UUID=$(blkid -s UUID -o value "${CRYPT_PART}")
 
 # Create chroot setup script - first write variable definitions (unquoted heredoc expands them)
-cat > /mnt/root/chroot-setup.sh << VARS_END
+cat >/mnt/root/chroot-setup.sh <<VARS_END
 #!/bin/bash
 set -e
 # Variables injected from installer
@@ -237,7 +240,7 @@ LUKS_UUID="${LUKS_UUID}"
 VARS_END
 
 # Append rest of script (quoted heredoc preserves nested heredocs and $vars)
-cat >> /mnt/root/chroot-setup.sh << 'CHROOT_END'
+cat >>/mnt/root/chroot-setup.sh <<'CHROOT_END'
 
 # Timezone
 ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
@@ -269,6 +272,7 @@ pacman -S --noconfirm \
     dosfstools \
     efibootmgr \
     exfatprogs \
+    fastfetch \
     fd \
     fzf \
     github-cli \
@@ -493,19 +497,19 @@ success "System configuration complete"
 # =============================================================================
 
 if [[ -d "${PKG_CACHE}" ]] && mountpoint -q "${PKG_CACHE}"; then
-    echo ""
-    info "USB detected at ${PKG_CACHE}"
-    read -p "Save package cache to USB for future installs? [y/N]: " save_cache
-    if [[ "${save_cache}" =~ ^[Yy]$ ]]; then
-        PKG_COUNT=$(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l)
-        info "Archiving ${PKG_COUNT} packages to USB (be patient, USB is slow)..."
-        rm -f "${PKG_CACHE_TAR}"
-        tar cvf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg . 2>&1 | \
-            awk 'NR % 50 == 0 { printf "  %d files...\n", NR } END { printf "  %d files total\n", NR }'
-        info "Syncing to USB (may take 1-2 minutes)..."
-        sync
-        success "Package cache saved to ${PKG_CACHE_TAR}"
-    fi
+  echo ""
+  info "USB detected at ${PKG_CACHE}"
+  read -p "Save package cache to USB for future installs? [y/N]: " save_cache
+  if [[ "${save_cache}" =~ ^[Yy]$ ]]; then
+    PKG_COUNT=$(ls /mnt/var/cache/pacman/pkg/*.pkg.tar.zst 2>/dev/null | wc -l)
+    info "Archiving ${PKG_COUNT} packages to USB (be patient, USB is slow)..."
+    rm -f "${PKG_CACHE_TAR}"
+    tar cvf "${PKG_CACHE_TAR}" -C /mnt/var/cache/pacman/pkg . 2>&1 |
+      awk 'NR % 50 == 0 { printf "  %d files...\n", NR } END { printf "  %d files total\n", NR }'
+    info "Syncing to USB (may take 1-2 minutes)..."
+    sync
+    success "Package cache saved to ${PKG_CACHE_TAR}"
+  fi
 fi
 
 # =============================================================================
