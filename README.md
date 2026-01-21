@@ -378,3 +378,41 @@ sudo lynis audit system
 ```
 
 Review the output for warnings and suggestions. Copy the results to Claude Code for analysis and recommendations.
+
+## 7. Scripts
+
+User scripts in `~/dotfiles/scripts/.local/bin/` (stowed to `~/.local/bin/`).
+
+### md2pdf
+
+Convert Markdown to PDF with code line wrapping.
+
+```bash
+md2pdf README.md              # Creates README.pdf
+md2pdf input.md output.pdf    # Custom output name
+```
+
+Uses pandoc with LaTeX, A4 paper, 2.5cm margins, and automatic code block wrapping.
+
+### github-backup
+
+Mirror all GitHub repos for offline backup.
+
+```bash
+github-backup benarcher2691                    # Backup to ~/backups/github/benarcher2691/
+github-backup myorg /mnt/external/github       # Custom backup location
+```
+
+Creates bare git mirrors with all branches, LFS objects, and wikis. Run periodically to keep backups current.
+
+### github-restore
+
+Restore a repo from backup for offline work.
+
+```bash
+github-restore dotfiles              # Clone to ./dotfiles from backup
+github-restore dotfiles ~/projects   # Clone to custom location
+github-restore                       # List available backups
+```
+
+Clones from local backup and sets remote to GitHub. When online, `git push` goes to GitHub. Idempotent - safe to run on existing repos.
