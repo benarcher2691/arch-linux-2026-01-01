@@ -263,6 +263,7 @@ EOF
 # Install additional packages
 pacman -S --noconfirm \
     alacritty \
+    avahi \
     bluez \
     bluez-utils \
     brightnessctl \
@@ -287,6 +288,7 @@ pacman -S --noconfirm \
     mako \
     noto-fonts \
     network-manager-applet \
+    nss-mdns \
     noto-fonts-emoji \
     neovim \
     openssh \
@@ -419,8 +421,12 @@ When = PostTransaction
 Exec = /usr/bin/bash -c 'cp /boot/vmlinuz-linux /efi/ 2>/dev/null || true; cp /boot/vmlinuz-linux-lts /efi/ 2>/dev/null || true; cp /boot/initramfs-linux.img /efi/ 2>/dev/null || true; cp /boot/initramfs-linux-fallback.img /efi/ 2>/dev/null || true; cp /boot/initramfs-linux-lts.img /efi/ 2>/dev/null || true; cp /boot/initramfs-linux-lts-fallback.img /efi/ 2>/dev/null || true; cp /boot/intel-ucode.img /efi/ 2>/dev/null || true'
 EOF
 
+# Configure mDNS resolution for network printer discovery
+sed -i 's/^hosts:.*/hosts: mymachines mdns4_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] files dns/' /etc/nsswitch.conf
+
 # Enable services
 systemctl enable NetworkManager
+systemctl enable avahi-daemon
 systemctl enable systemd-boot-update
 systemctl enable systemd-timesyncd
 systemctl enable sshd

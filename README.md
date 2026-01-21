@@ -168,7 +168,63 @@ Restart shell, then install versions as needed:
 start-hyprland
 ```
 
-## 5. Additional Software
+## 5. Network Printer Setup
+
+CUPS and mDNS discovery are pre-installed. To add a network printer:
+
+### Discover the printer
+
+```bash
+avahi-browse -art | grep -i printer
+```
+
+This shows printers on the network with their mDNS hostnames (e.g., `BRN008077D04DB0.local`).
+
+### Get the IP address
+
+```bash
+avahi-resolve -n HOSTNAME.local
+```
+
+### Install the driver (Brother example)
+
+```bash
+# Search for your model
+yay -Ss brother | grep -i YOUR_MODEL
+
+# Install (example for HL-2170W)
+yay -S brother-hl2170w
+```
+
+### Find the PPD name
+
+```bash
+lpinfo -m | grep -i YOUR_MODEL
+```
+
+### Add the printer
+
+```bash
+lpadmin -p PrinterName -E -v "socket://PRINTER_IP:9100" -m YOUR_MODEL.ppd
+```
+
+Example for Brother HL-2170W:
+```bash
+lpadmin -p HL2170W -E -v "socket://192.168.1.8:9100" -m HL2170W.ppd
+```
+
+### Test printing
+
+```bash
+echo "test" | lp -d PrinterName
+lp -d PrinterName -P 1 document.pdf   # Print page 1 only
+```
+
+### Web interface
+
+CUPS web interface available at `http://localhost:631` for managing printers and jobs.
+
+## 6. Additional Software
 
 ### Media player
 
@@ -285,7 +341,7 @@ sudo systemd-hwdb update && sudo udevadm trigger
 
 To find keysyms for other keys, use `wev` or `sudo evtest`.
 
-## 6. Security Hardening
+## 7. Security Hardening
 
 Based on Lynis audit recommendations.
 
@@ -379,7 +435,7 @@ sudo lynis audit system
 
 Review the output for warnings and suggestions. Copy the results to Claude Code for analysis and recommendations.
 
-## 7. Scripts
+## 8. Scripts
 
 User scripts in `~/dotfiles/scripts/.local/bin/` (stowed to `~/.local/bin/`).
 
