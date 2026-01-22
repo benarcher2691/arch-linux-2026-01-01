@@ -24,3 +24,9 @@ User dotfiles are stored in `~/dotfiles` and managed with GNU Stow. Each subdire
 - Commands should be tested and accurate for current Arch Linux
 - Maintain the single-file format for easy reference during installation
 - Update package names if they change in Arch repositories
+
+## Notes for Claude
+
+- Do not use sudo - the user will run privileged commands themselves
+- Always check if `~/.config/<app>` directories are symlinks (to ~/dotfiles) before editing configs
+- When the user asks to "make a memory", add the note to this CLAUDE.md file

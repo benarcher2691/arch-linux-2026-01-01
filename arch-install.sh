@@ -281,6 +281,7 @@ pacman -S --noconfirm \
     gnupg \
     grim \
     htop \
+    imv \
     hyprland \
     kitty \
     libreoffice-fresh \
