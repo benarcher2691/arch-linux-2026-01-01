@@ -284,6 +284,7 @@ pacman -S --noconfirm \
     htop \
     imv \
     hyprland \
+    hyprlock \
     kitty \
     libreoffice-fresh \
     lynis \
