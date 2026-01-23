@@ -266,6 +266,7 @@ pacman -S --noconfirm \
     avahi \
     bluez \
     bluez-utils \
+    bash-completion \
     brightnessctl \
     btop \
     cups \
