@@ -324,6 +324,30 @@ Alacritty has a built-in vi mode for navigating and copying terminal output with
 
 **Exit vi mode:** `Escape` or `Enter`
 
+### Swedish characters on US keyboard
+
+To type å, ä, ö on a US keyboard, use the **US International with AltGr dead keys** layout.
+
+Add to your Hyprland config (`~/.config/hypr/hyprland.conf`):
+```
+input {
+    kb_layout = us
+    kb_variant = altgr-intl
+}
+```
+
+Then reload Hyprland (`Super+Shift+E` → reload, or log out/in).
+
+**Key combinations (hold Right Alt):**
+- `Right Alt + w` → å
+- `Right Alt + q` → ä
+- `Right Alt + p` → ö
+- `Right Alt + Shift + w` → Å
+- `Right Alt + Shift + q` → Ä
+- `Right Alt + Shift + p` → Ö
+
+> **Note:** This layout makes the right Alt key function as "AltGr". It also gives you other useful characters: `Right Alt + 5` → €, `Right Alt + s` → ß, etc.
+
 ### ThinkPad F10/F11/F12 media controls
 
 F10 is mapped to `XF86Bluetooth` by default, which toggles Bluetooth at the kernel level (rfkill). To use F10-F12 as media keys with `playerctl`:
