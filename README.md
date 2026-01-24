@@ -259,8 +259,8 @@ yay -S claude-code
 ### Docker and DevPod
 
 ```bash
-# Install Docker
-sudo pacman -S docker
+# Install Docker and docker-compose
+sudo pacman -S docker docker-compose
 sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
 newgrp docker   # Activate group in current shell (or log out/in)
