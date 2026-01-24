@@ -279,6 +279,21 @@ devpod up <repo-or-path>
 devpod ssh <workspace-name>
 ```
 
+### Android Tools (for React Native development)
+
+```bash
+# ADB and fastboot for device communication
+sudo pacman -S android-tools
+
+# Verify installation
+adb version
+
+# Connect device via USB, then:
+adb devices   # Should list your device
+```
+
+Note: Android SDK and build tools are included in the bbtec-app devcontainer for APK builds. Only `android-tools` (adb) is needed on the host for device communication.
+
 ### fzf integration with bash
 
 If you installed fzf, enable bash integration for enhanced history search:
